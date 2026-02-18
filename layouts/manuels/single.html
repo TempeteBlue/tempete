@@ -1,12 +1,5 @@
 {{ define "main" }}
-<!-- SINGLE TEMPLATE -->
-TEST-DEBUG-START
-{{ $data := merge .Params (dict 
-  "title" (.Params.title | default .Title)
-  "description" (.Params.description | default "")
-  "years" (.Params.years | default "")
-  "specs" (.Params.specs | default dict)
-) }}
+====SINGLE-PAGE-TEMPLATE====
 <div class="container page-container">
   <article class="manual-page">
     <header class="page-header">
