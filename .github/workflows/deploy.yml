@@ -88,12 +88,10 @@ jobs:
           echo "📦 Traitement des dossiers de produits simples..."
           python3 scripts/process-simple-products.py || echo "Pas de dossiers simples à traiter"
 
-      - name: Sync manuals from content structure
+      - name: Generate manual indexes from PDF folders
         run: |
-          echo "📁 Synchronisation des manuels PDF..."
-          # DÉSACTIVÉ: index-manuals.py génère un contenu incorrect avec syntaxe Hugo non traitée
-          # python3 scripts/index-manuals.py || echo "Pas de script d'indexation"
-          echo "⏭️  Script d'indexation désactivé (utiliser process-simple-manuals.py)"
+          echo "📄 Génération des index pour les dossiers de manuels..."
+          python3 scripts/generate-manual-indexes.py || echo "Pas de dossiers à indexer"
 
       - name: Build Hugo site
         run: hugo --gc --minify --baseURL "https://tempeteblue.github.io/tempete/"
