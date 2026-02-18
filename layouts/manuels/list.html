@@ -18,7 +18,9 @@ TRIGGER-BUILD-2026
   {{ $images := slice }}
   {{ $pdfs := slice }}
   {{ $dir := .Path }}
+  {{ if not $dir }}{{ $dir = .File.Dir }}{{ end }}
   {{ $fullDir := printf "content/%s" $dir }}
+  {{ if and $dir (fileExists $fullDir) }}
   {{ range (readDir $fullDir) }}
     {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
       {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
@@ -26,6 +28,7 @@ TRIGGER-BUILD-2026
     {{ if hasSuffix .Name ".pdf" }}
       {{ $pdfs = $pdfs | append (dict "name" .Name "dir" $dir) }}
     {{ end }}
+  {{ end }}
   {{ end }}
   {{ if $images }}
   <div class="image-carousel">
