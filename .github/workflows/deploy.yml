@@ -63,6 +63,13 @@ jobs:
             fi
           fi
 
+      - name: Clean generated content
+        run: |
+          echo "🧹 Nettoyage du contenu généré..."
+          # Supprimer les fichiers md qui seront regénérés (ceux sans _index)
+          find content/manuels -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
+          find content/produits -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
+
       - name: Generate product pages from data
         run: |
           echo "🔄 Génération automatique des pages produits..."
