@@ -1,4 +1,5 @@
 {{ define "main" }}
+<!-- SINGLE TEMPLATE -->
 TEST-DEBUG-START
 {{ $data := merge .Params (dict 
   "title" (.Params.title | default .Title)
