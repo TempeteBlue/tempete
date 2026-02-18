@@ -22,13 +22,14 @@
     {{ $pdfs := slice }}
     {{ $dir := "" }}
     {{ if .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
+    {{ $contentDir := printf "content/%s" $dir }}
     {{ if $dir }}
-    {{ range (readDir (printf "content/%s" $dir)) }}
+    {{ range (readDir $contentDir) }}
       {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
-        {{ $images = $images | append (printf "%s%s" $dir .Name) }}
+        {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
       {{ end }}
       {{ if hasSuffix .Name ".pdf" }}
-        {{ $pdfs = $pdfs | append . }}
+        {{ $pdfs = $pdfs | append (dict "name" .Name "dir" $dir) }}
       {{ end }}
     {{ end }}
     {{ end }}
@@ -91,7 +92,7 @@
       <h2>📖 Manuels disponibles</h2>
       <div class="manuals-list">
         {{ range $pdfs }}
-        {{ $baseName := .Name | replaceRE "\\.pdf$" "" }}
+        {{ $baseName := .name | replaceRE "\\.pdf$" "" }}
         {{ $parts := split $baseName " " }}
         {{ $modelNum := index $parts 0 }}
         {{ $serialNum := "" }}
@@ -109,7 +110,7 @@
               {{ end }}
             </h3>
           </div>
-          <a href="{{ printf "%s%s" $dir .Name | absURL }}" class="btn btn-primary" target="_blank">
+          <a href="{{ printf "%s/%s" .dir .name | absURL }}" class="btn btn-primary" target="_blank">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
