@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang | default "fr" }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  
+  {{ hugo.Generator }}
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+  <meta name="keywords" content="{{ .Params.keywords | default "souffleuse à neige, pièces, équipement hiver, concessionnaire" }}">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ .Title | default .Site.Title }}">
+  <meta property="og:description" content="{{ .Description | default .Site.Params.description }}">
+  <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+  {{ with .Params.image }}<meta property="og:image" content="{{ . | absURL }}">{{ end }}
+  
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ .Permalink }}">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ "css/style.css" | relURL }}">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{{ "favicon.ico" | relURL }}">
+  
+  {{ block "head" . }}{{ end }}
+</head>
+<body>
+  {{ partial "header.html" . }}
+  
+  <main id="main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  
+  {{ partial "footer.html" . }}
+  
+  <!-- JavaScript -->
+  <script src="{{ "js/main.js" | relURL }}"></script>
+  {{ block "scripts" . }}{{ end }}
+</body>
+</html>

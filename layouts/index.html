@@ -1,0 +1,76 @@
+{{ define "main" }}
+{{ $homepage := index .Site.Data "homepage" }}
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">{{ $homepage.hero.title }}</h1>
+      <p class="hero-subtitle">{{ $homepage.hero.subtitle }}</p>
+      <div class="hero-actions">
+        <a href="{{ $homepage.hero.button_primary.url | relURL }}" class="btn btn-primary">{{ $homepage.hero.button_primary.text }}</a>
+        <a href="{{ $homepage.hero.button_secondary.url | relURL }}" class="btn btn-secondary">{{ $homepage.hero.button_secondary.text }}</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="{{ $homepage.hero.image | relURL }}" alt="Souffleuse à neige professionnelle" loading="eager">
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <h2>Pourquoi nous choisir</h2>
+    <div class="features-grid">
+      {{ range $homepage.features }}
+      <div class="feature">
+        <span class="feature-icon">{{ .icon }}</span>
+        <h3>{{ .title }}</h3>
+        <p>{{ .description }}</p>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+<section class="products-preview">
+  <div class="container">
+    <h2>Nos produits en vedette</h2>
+    <div class="products-grid">
+      {{ range first 6 (where .Site.RegularPages "Section" "produits") }}
+      {{ partial "product-card.html" . }}
+      {{ end }}
+    </div>
+    <div class="text-center">
+      <a href="{{ "/produits/" | relURL }}" class="btn btn-outline">Voir tous les produits</a>
+    </div>
+  </div>
+</section>
+
+<section class="manuals-categories">
+  <div class="container">
+    <h2>Manuels par catégorie</h2>
+    <div class="categories-grid">
+      {{ range .Site.Sections }}
+      {{ if eq .Section "manuels" }}
+      {{ range .Sections }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📁</span>
+        <h3>{{ .Title }}</h3>
+        <span class="category-count">{{ len .Pages }} modèle(s)</span>
+      </a>
+      {{ end }}
+      {{ end }}
+      {{ end }}
+    </div>
+  </div>
+</section>
+
+<section class="contact-cta">
+  <div class="container">
+    <div class="cta-content">
+      <h2>{{ $homepage.cta.title }}</h2>
+      <p>{{ $homepage.cta.description }}</p>
+      <a href="{{ $homepage.cta.button.url | relURL }}" class="btn btn-primary">{{ $homepage.cta.button.text }}</a>
+    </div>
+  </div>
+</section>
+{{ end }}

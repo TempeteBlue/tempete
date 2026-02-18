@@ -1,0 +1,56 @@
+{{ define "main" }}
+<div class="container page-container">
+  <header class="page-header">
+    <h1 class="page-title">📁 {{ .Title }}</h1>
+    {{ if .Description }}
+    <p class="page-description">{{ .Description }}</p>
+    {{ end }}
+  </header>
+  
+  <!-- Navigation hiérarchique des manuels -->
+  {{ if .Sections }}
+  <section class="manual-categories">
+    <h2>Catégories</h2>
+    <div class="category-grid">
+      {{ range .Sections }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📂</span>
+        <h3>{{ .Title }}</h3>
+        <p>{{ len .Pages }} modèle(s)</p>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+  
+  <!-- Liste des modèles -->
+  {{ if .Pages }}
+  <section class="model-list">
+    <h2>Modèles disponibles</h2>
+    <div class="models-grid">
+      {{ range .Pages }}
+      <article class="model-card">
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{ if .Params.years }}
+        <p class="model-years">Années: {{ .Params.years }}</p>
+        {{ end }}
+        {{ if .Summary }}
+        <p class="model-description">{{ .Summary }}</p>
+        {{ end }}
+        <div class="model-actions">
+          <a href="{{ .RelPermalink }}" class="btn btn-small">Voir les manuels</a>
+        </div>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+  
+  <!-- Contenu additionnel -->
+  {{ if .Content }}
+  <div class="page-content">
+    {{ .Content }}
+  </div>
+  {{ end }}
+</div>
+{{ end }}

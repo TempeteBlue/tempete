@@ -1,0 +1,12 @@
+title: "Modèle Exemple"
+description: "Manuel de pièces pour le modèle exemple"
+years: "2020+"
+date: "01/2020"
+version: "1"
+lang: "Français"
+images:
+  - images/manuels/souffleuses/exemple-modele/backgroundDefault.jpg
+specs:
+  Largeur: "90 pouces"
+  Poids: "500 kg"
+  Capacité: "Jusqu'à 15 pouces de neige"

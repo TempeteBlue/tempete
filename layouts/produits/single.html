@@ -1,0 +1,152 @@
+{{ define "main" }}
+<div class="container page-container">
+  <article class="product-page">
+    <div class="product-layout">
+      <!-- Colonne images -->
+      <div class="product-gallery">
+        {{ if .Params.images }}
+          {{ $imageCount := len .Params.images }}
+          {{ if gt $imageCount 1 }}
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+              {{ range .Params.images }}
+              <div class="carousel-slide">
+                <img src="{{ . | absURL }}" alt="{{ $.Title }}">
+              </div>
+              {{ end }}
+            </div>
+            <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+            <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+            <div class="carousel-dots">
+              {{ range $i, $_ := .Params.images }}
+              <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+              {{ end }}
+            </div>
+          </div>
+          {{ else }}
+          <figure class="product-main-image">
+            <img src="{{ (index .Params.images 0) | absURL }}" alt="{{ .Title }}" id="main-product-image">
+          </figure>
+          {{ end }}
+        {{ else if .Params.image }}
+        <figure class="product-main-image">
+          <img src="{{ .Params.image | relURL }}" alt="{{ .Title }}" id="main-product-image">
+        </figure>
+        {{ end }}
+      </div>
+      
+      <!-- Colonne informations -->
+      <div class="product-details">
+        <header class="product-header">
+          <h1 class="product-title">{{ .Title }}</h1>
+          {{ if .Params.subtitle }}
+          <p class="product-subtitle">{{ .Params.subtitle }}</p>
+          {{ end }}
+          
+          {{ if .Params.categories }}
+          <div class="product-categories">
+            {{ range .Params.categories }}
+            <span class="category-tag">{{ . }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+          
+          {{ if .Params.price }}
+          <div class="product-price-block">
+            <span class="price">{{ .Params.price }} $</span>
+            {{ if .Params.price_note }}
+            <span class="price-note">{{ .Params.price_note }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+        </header>
+        
+        <div class="product-description">
+          {{ .Content }}
+        </div>
+        
+        <!-- Spécifications -->
+        {{ if .Params.specs }}
+        <section class="product-specs">
+          <h2>Spécifications techniques</h2>
+          <table class="specs-table">
+            <tbody>
+              {{ range $key, $value := .Params.specs }}
+              <tr>
+                <th>{{ $key }}</th>
+                <td>{{ $value }}</td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </section>
+        {{ end }}
+        
+        <!-- Documents / Manuels -->
+        {{ if .Params.documents }}
+        <section class="product-documents">
+          <h2>📖 Documentation</h2>
+          <div class="documents-list">
+            {{ range .Params.documents }}
+            <div class="document-item">
+              <div class="document-info">
+                <h3>{{ .title }}</h3>
+              </div>
+              <div class="document-actions">
+                <a href="{{ .file | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                  Télécharger PDF
+                </a>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </section>
+        {{ else if .Params.manual_ref }}
+        <section class="product-manual">
+          <h2>📖 Documentation</h2>
+          <a href="{{ .Params.manual_ref | relURL }}" class="btn btn-secondary">
+            Voir le manuel de pièces
+          </a>
+        </section>
+        {{ end }}
+        
+        <!-- Contact -->
+        <div class="product-cta">
+          <h2>Intéressé par ce produit?</h2>
+          <p>Contactez-nous pour connaître la disponibilité et les options de livraison.</p>
+          <a href="{{ "/contact/" | relURL }}?produit={{ .Title | urlize }}" class="btn btn-primary">
+            Demander plus d'informations
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Produits similaires -->
+    {{ $related := .Site.RegularPages.Related . | first 3 }}
+    {{ if $related }}
+    <section class="related-products">
+      <h2>Produits similaires</h2>
+      <div class="products-grid">
+        {{ range $related }}
+        {{ partial "product-card.html" . }}
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+  </article>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+// Gallerie d'images
+document.querySelectorAll('.thumbnail').forEach(thumb => {
+  thumb.addEventListener('click', function() {
+    const mainImage = document.getElementById('main-product-image');
+    if (mainImage) {
+      mainImage.src = this.dataset.src;
+    }
+  });
+});
+</script>
+{{ end }}

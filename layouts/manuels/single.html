@@ -1,0 +1,160 @@
+{{ define "main" }}
+<div class="container page-container">
+  <article class="manual-page">
+    <header class="page-header">
+      <h1 class="page-title">{{ .Title }}</h1>
+      {{ if .Params.subtitle }}
+      <p class="page-subtitle">{{ .Params.subtitle }}</p>
+      {{ end }}
+      {{ if .Params.years }}
+      <p class="model-years-badge">Années: {{ .Params.years }}</p>
+      {{ end }}
+    </header>
+    
+    <!-- Image Gallery / Carousel -->
+    {{ if .Params.images }}
+    <div class="image-carousel">
+      {{ $imageCount := len .Params.images }}
+      {{ if gt $imageCount 1 }}
+      <div class="carousel-container">
+        <div class="carousel-track" id="carouselTrack">
+          {{ range .Params.images }}
+          <div class="carousel-slide">
+            <img src="{{ . | absURL }}" alt="{{ $.Title }}">
+          </div>
+          {{ end }}
+        </div>
+        <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+        <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+        <div class="carousel-dots">
+          {{ range $i, $_ := .Params.images }}
+          <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+          {{ end }}
+        </div>
+      </div>
+      {{ else }}
+      <div class="single-image">
+        <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}">
+      </div>
+      {{ end }}
+    </div>
+    {{ end }}
+    
+    <!-- Informations du modèle -->
+    <div class="model-info">
+      {{ if .Params.description }}
+      <div class="model-description">
+        <h2>Description</h2>
+        <p>{{ .Params.description }}</p>
+      </div>
+      {{ end }}
+      
+      {{ if .Params.specs }}
+      <div class="model-specs">
+        <h2>Caractéristiques</h2>
+        {{ range $key, $value := .Params.specs }}
+          {{ if reflect.IsMap $value }}
+            <h3>{{ $key }}</h3>
+            <dl class="specs-list">
+              {{ range $specKey, $specValue := $value }}
+              <dt>{{ $specKey }}</dt>
+              <dd>{{ $specValue }}</dd>
+              {{ end }}
+            </dl>
+          {{ else }}
+            <dl class="specs-list">
+              <dt>{{ $key }}</dt>
+              <dd>{{ $value }}</dd>
+            </dl>
+          {{ end }}
+        {{ end }}
+      </div>
+      {{ end }}
+    </div>
+    
+    <!-- Liste des manuels PDF -->
+    {{ if .Params.manuals }}
+    <section class="manuals-section">
+      <h2>📖 Manuels disponibles</h2>
+      <div class="manuals-list">
+        {{ range .Params.manuals }}
+        <div class="manual-item">
+          <div class="manual-info">
+            <h3>{{ .title }}</h3>
+            {{ if .description }}
+            <p>{{ .description }}</p>
+            {{ end }}
+            {{ if .date }}
+            <span class="manual-date">Mise à jour: {{ .date }}</span>
+            {{ end }}
+            {{ if .lang }}
+            <span class="manual-lang">Langue: {{ .lang }}</span>
+            {{ end }}
+          </div>
+          <div class="manual-actions">
+            <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              Télécharger PDF
+            </a>
+            {{ if .version }}
+            <span class="version-badge">v{{ .version }}</span>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+    
+    <!-- Manuels détectés automatiquement -->
+    {{ $pdfPath := printf "pdf/manuels/%s" .File.ContentBaseName }}
+    {{ $pdfFiles := "" }}
+    {{ if fileExists (printf "static/%s" $pdfPath) }}
+      {{ $pdfFiles = readDir (printf "static/%s" $pdfPath) }}
+    {{ end }}
+    {{ if $pdfFiles }}
+    <section class="manuals-section">
+      <h2>📎 Documents associés</h2>
+      <div class="manuals-list">
+        {{ range $pdfFiles }}
+        <div class="manual-item">
+          <div class="manual-info">
+            <h3>{{ .Name | replaceRE "\\.pdf$" "" }}</h3>
+          </div>
+          <a href="{{ printf "%s/%s" $pdfPath .Name | absURL }}" class="btn btn-secondary" target="_blank">
+            Voir le PDF
+          </a>
+        </div>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+    
+    <!-- Contenu additionnel -->
+    {{ if .Content }}
+    <div class="page-content">
+      {{ .Content }}
+    </div>
+    {{ end }}
+    
+    <!-- Navigation -->
+    <nav class="page-navigation">
+      {{ with .PrevInSection }}
+      <a href="{{ .RelPermalink }}" class="nav-prev">
+        ← {{ .Title }}
+      </a>
+      {{ end }}
+      {{ with .NextInSection }}
+      <a href="{{ .RelPermalink }}" class="nav-next">
+        {{ .Title }} →
+      </a>
+      {{ end }}
+    </nav>
+  </article>
+</div>
+{{ end }}

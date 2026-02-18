@@ -1,0 +1,116 @@
+name: Deploy Hugo Site to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  # Permet de déclencher manuellement
+  workflow_dispatch:
+
+# Permissions nécessaires pour GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Concurrence pour éviter les déploiements simultanés
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+# Variables d'environnement
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Job de build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Nécessaire pour la dernière modification
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.124.1'
+          extended: true  # Nécessaire pour SCSS/Sass
+
+      - name: Setup Node.js (pour les assets)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Node dependencies (si package.json existe)
+        run: |
+          if [ -f package.json ]; then
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install
+            fi
+          fi
+
+      - name: Generate product pages from data
+        run: |
+          echo "🔄 Génération automatique des pages produits..."
+          # Script pour générer les pages Markdown des produits depuis CSV/YAML
+          python3 scripts/generate-products.py || echo "Pas de script de génération"
+
+      - name: Process simple manual folders
+        run: |
+          echo "📁 Traitement des dossiers de manuels simples..."
+          python3 scripts/process-simple-manuals.py || echo "Pas de dossiers simples à traiter"
+
+      - name: Process simple product folders
+        run: |
+          echo "📦 Traitement des dossiers de produits simples..."
+          python3 scripts/process-simple-products.py || echo "Pas de dossiers simples à traiter"
+
+      - name: Sync manuals from content structure
+        run: |
+          echo "📁 Synchronisation des manuels PDF..."
+          # Script pour indexer les manuels PDF
+          python3 scripts/index-manuals.py || echo "Pas de script d'indexation"
+
+      - name: Build Hugo site
+        run: hugo --gc --minify --baseURL "https://cedricbouffard.github.io/tempete/"
+        env:
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+
+      - name: Generate search index
+        run: |
+          echo "🔍 Génération de l'index de recherche..."
+          # Créer un index JSON pour la recherche
+          python3 scripts/generate-search-index.py || echo "Pas de script de recherche"
+
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  # Job de déploiement
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

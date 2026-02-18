@@ -1,0 +1,59 @@
+{{ define "main" }}
+<div class="container page-container">
+  <header class="page-header">
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ if .Description }}
+    <p class="page-description">{{ .Description }}</p>
+    {{ end }}
+  </header>
+  
+  <!-- Filtres -->
+  <div class="filters">
+    <div class="filter-group">
+      <label for="category-filter">Catégorie:</label>
+      <select id="category-filter" class="filter-select">
+        <option value="">Toutes</option>
+        {{ range .Site.Taxonomies.categories }}
+        <option value="{{ .Page.Title }}">{{ .Page.Title }}</option>
+        {{ end }}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="sort-filter">Trier par:</label>
+      <select id="sort-filter" class="filter-select">
+        <option value="name">Nom</option>
+        <option value="price-asc">Prix croissant</option>
+        <option value="price-desc">Prix décroissant</option>
+      </select>
+    </div>
+  </div>
+  
+  <!-- Grille de produits -->
+  {{ if .Pages }}
+  <div class="products-grid" id="products-grid">
+    {{ range .Pages }}
+    {{ partial "product-card.html" . }}
+    {{ end }}
+  </div>
+  {{ else }}
+  <p class="no-products">Aucun produit disponible pour le moment.</p>
+  {{ end }}
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<script>
+// Filtres simples côté client
+document.getElementById('category-filter')?.addEventListener('change', function() {
+  const category = this.value;
+  const cards = document.querySelectorAll('.product-card');
+  cards.forEach(card => {
+    if (!category || card.dataset.category === category) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+});
+</script>
+{{ end }}

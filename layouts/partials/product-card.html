@@ -1,0 +1,43 @@
+<article class="product-card" data-category="{{ range .Params.categories }}{{ . }}{{ end }}" data-price="{{ .Params.price }}">
+  <div class="product-image">
+    {{ if .Params.image }}
+    <img src="{{ .Params.image | relURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><span>❄️</span></div>'">
+    {{ else }}
+    <div class="product-placeholder">
+      <span>❄️</span>
+    </div>
+    {{ end }}
+    {{ if .Params.new }}
+    <span class="badge badge-new">Nouveau</span>
+    {{ end }}
+    {{ if .Params.promo }}
+    <span class="badge badge-promo">Promo</span>
+    {{ end }}
+  </div>
+  
+  <div class="product-info">
+    <h3 class="product-title">
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    </h3>
+    
+    {{ if .Params.categories }}
+    <div class="product-categories">
+      {{ range .Params.categories }}
+      <span class="category-tag">{{ . }}</span>
+      {{ end }}
+    </div>
+    {{ end }}
+    
+    {{ if .Summary }}
+    <p class="product-description">{{ .Summary }}</p>
+    {{ end }}
+    
+    <div class="product-footer">
+      {{ if .Params.price }}
+      <span class="product-price">{{ .Params.price }} $</span>
+      {{ end }}
+      
+      <a href="{{ .RelPermalink }}" class="btn btn-small">Voir les détails</a>
+    </div>
+  </div>
+</article>
