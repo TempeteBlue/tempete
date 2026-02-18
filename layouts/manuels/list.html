@@ -74,6 +74,20 @@
     </div>
   </section>
   {{ end }}
+
+  <!-- Navigation vers les sous-dossiers -->
+  {{ if .Sections }}
+  <section class="manual-sections">
+    <h2>📁 Dossiers</h2>
+    <div class="sections-grid">
+      {{ range .Sections }}
+      <a href="{{ .RelPermalink }}" class="section-card">
+        <h3>{{ .Title }}</h3>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
   
   <!-- Contenu additionnel -->
   {{ if .Content }}
