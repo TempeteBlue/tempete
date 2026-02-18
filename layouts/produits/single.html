@@ -1,6 +1,7 @@
 {{ define "main" }}
 {{ $images := slice }}
 {{ $pdfs := slice }}
+{{ if .File }}
 {{ range (readDir (printf "content/%s" .File.Dir)) }}
   {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
     {{ $images = $images | append (printf "%s%s" .File.Dir .Name) }}
@@ -8,6 +9,7 @@
   {{ if hasSuffix .Name ".pdf" }}
     {{ $pdfs = $pdfs | append . }}
   {{ end }}
+{{ end }}
 {{ end }}
 <div class="container page-container">
   <article class="product-page">
