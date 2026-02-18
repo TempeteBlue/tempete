@@ -16,19 +16,13 @@
   <!-- Image Gallery / Carousel -->
   {{ $images := slice }}
   {{ $pdfs := slice }}
-  {{ $dir := "" }}
-  {{ with .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
-  {{ $dir = trim $dir "/" }}
-  {{ $fullDir := printf "content/%s" $dir }}
-  {{ if and $dir (fileExists $fullDir) }}
-  {{ range (readDir $fullDir) }}
-    {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
-      {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
-    {{ end }}
-    {{ if hasSuffix .Name ".pdf" }}
-      {{ $pdfs = $pdfs | append (dict "name" .Name "dir" $dir) }}
-    {{ end }}
+  {{ $resources := .Resources.ByType "image" }}
+  {{ range $resources }}
+    {{ $images = $images | append .Permalink }}
   {{ end }}
+  {{ $pdfResources := .Resources.ByType "application/pdf" }}
+  {{ range $pdfResources }}
+    {{ $pdfs = $pdfs | append (dict "name" .Name "url" .Permalink) }}
   {{ end }}
   {{ if $images }}
   <div class="image-carousel">
@@ -38,7 +32,7 @@
       <div class="carousel-track" id="carouselTrack">
         {{ range $images }}
         <div class="carousel-slide">
-          <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+          <img src="{{ . }}" alt="{{ $data.title }}">
         </div>
         {{ end }}
       </div>
@@ -52,7 +46,7 @@
     </div>
     {{ else }}
     <div class="single-image">
-      <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
+      <img src="{{ index $images 0 }}" alt="{{ $data.title }}">
     </div>
     {{ end }}
   </div>
@@ -69,7 +63,7 @@
         <div class="manual-info">
           <h3>{{ $baseName }}</h3>
         </div>
-        <a href="{{ printf "%s/%s" .dir .name | absURL }}" class="btn btn-primary" target="_blank">
+        <a href="{{ .url }}" class="btn btn-primary" target="_blank">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
