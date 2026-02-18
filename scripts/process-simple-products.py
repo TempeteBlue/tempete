@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Script pour traiter les dossiers de produits simples
 Structure attendue: content/produits/<produit>/
@@ -8,6 +9,12 @@ Structure attendue: content/produits/<produit>/
 
 Le script copie les images vers static/images/produits/ et génère le fichier .md
 """
+
+import sys
+import io
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 import os
 import yaml

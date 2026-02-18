@@ -66,9 +66,11 @@ jobs:
       - name: Clean generated content
         run: |
           echo "🧹 Nettoyage du contenu généré..."
-          # Supprimer les fichiers md qui seront regénérés (ceux sans _index)
-          find content/manuels -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
-          find content/produits -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
+          # Supprimer les fichiers md générés par les scripts (pas les fichiers manuels)
+          # Manuels: fichiers dans les sous-dossiers de catégorie (modèle.md)
+          find content/manuels -mindepth 2 -maxdepth 2 -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
+          # Produits: fichiers index.md dans les sous-dossiers
+          find content/produits -mindepth 2 -maxdepth 2 -name "index.md" -type f -delete 2>/dev/null || true
 
       - name: Generate product pages from data
         run: |
@@ -89,8 +91,9 @@ jobs:
       - name: Sync manuals from content structure
         run: |
           echo "📁 Synchronisation des manuels PDF..."
-          # Script pour indexer les manuels PDF
-          python3 scripts/index-manuals.py || echo "Pas de script d'indexation"
+          # DÉSACTIVÉ: index-manuals.py génère un contenu incorrect avec syntaxe Hugo non traitée
+          # python3 scripts/index-manuals.py || echo "Pas de script d'indexation"
+          echo "⏭️  Script d'indexation désactivé (utiliser process-simple-manuals.py)"
 
       - name: Build Hugo site
         run: hugo --gc --minify --baseURL "https://tempeteblue.github.io/tempete/"

@@ -1,0 +1,52 @@
+name: Convert PDF First Pages to PNG
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'static/pdf/**/*.pdf'
+  workflow_dispatch:
+
+jobs:
+  convert-pdf-to-png:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils ghostscript
+
+      - name: Create output directory
+        run: mkdir -p static/images/manuels
+
+      - name: Convert first page of PDFs to PNG
+        run: |
+          find static/pdf/manuels -name "*.pdf" -type f | while read pdf_file; do
+            # Get the relative path from static/pdf/manuels
+            rel_path="${pdf_file#static/pdf/manuels/}"
+            # Remove .pdf extension
+            base_name="${rel_path%.pdf}"
+            # Create output directory for this PDF
+            output_dir="static/images/manuels/$(dirname "$rel_path")"
+            mkdir -p "$output_dir"
+            # Convert first page to PNG
+            output_file="$output_dir/$(basename "$base_name")"
+            pdftoppm -png -f 1 -l 1 -singlefile "$pdf_file" "$output_file"
+            echo "Converted: $pdf_file -> ${output_file}.png"
+          done
+
+      - name: Upload PNG artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuel-pictures
+          path: static/images/manuels/
+          retention-days: 1
+
+      - name: Commit PNG files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "feat: Add manuel page pictures from PDF first pages"
+          file_pattern: "static/images/manuels/*.png"
