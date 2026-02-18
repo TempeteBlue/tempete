@@ -1,17 +1,13 @@
 {{ define "main" }}
 {{ $images := slice }}
 {{ $pdfs := slice }}
-{{ $dir := "" }}
-{{ if .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
-{{ if $dir }}
-{{ range (readDir (printf "content/%s" $dir)) }}
-  {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
-    {{ $images = $images | append (printf "%s%s" $dir .Name) }}
-  {{ end }}
-  {{ if hasSuffix .Name ".pdf" }}
-    {{ $pdfs = $pdfs | append . }}
-  {{ end }}
+{{ $resources := .Resources.ByType "image" }}
+{{ range $resources }}
+  {{ $images = $images | append .Permalink }}
 {{ end }}
+{{ $pdfResources := .Resources.ByType "application/pdf" }}
+{{ range $pdfResources }}
+  {{ $pdfs = $pdfs | append (dict "name" .Name "url" .Permalink) }}
 {{ end }}
 <div class="container page-container">
   <article class="product-page">
@@ -25,7 +21,7 @@
             <div class="carousel-track" id="carouselTrack">
               {{ range $images }}
               <div class="carousel-slide">
-                <img src="{{ . | absURL }}" alt="{{ $.Title }}">
+                <img src="{{ . }}" alt="{{ $.Title }}">
               </div>
               {{ end }}
             </div>
@@ -39,7 +35,7 @@
           </div>
           {{ else }}
           <figure class="product-main-image">
-            <img src="{{ (index $images 0) | absURL }}" alt="{{ .Title }}" id="main-product-image">
+            <img src="{{ index $images 0 }}" alt="{{ .Title }}" id="main-product-image">
           </figure>
           {{ end }}
         {{ else if .Params.images }}
@@ -128,10 +124,10 @@
             {{ range $pdfs }}
             <div class="document-item">
               <div class="document-info">
-                <h3>{{ .Name | replaceRE "\\.pdf$" "" }}</h3>
+                <h3>{{ .name | replaceRE "\\.pdf$" "" }}</h3>
               </div>
               <div class="document-actions">
-                <a href="{{ printf "%s%s" $dir .Name | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                <a href="{{ .url }}" class="btn btn-secondary" target="_blank" rel="noopener">
                   Télécharger PDF
                 </a>
               </div>
