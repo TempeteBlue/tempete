@@ -27,7 +27,11 @@ function initSearch() {
   if (!searchInput) return;
   
   // Charge l'index de recherche
-  fetch('/tempete/search-index.json')
+  const searchIndexPath = window.location.pathname.includes('/tempete/') 
+    ? '/tempete/search-index.json' 
+    : '/search-index.json';
+  
+  fetch(searchIndexPath)
     .then(response => response.json())
     .then(data => {
       window.searchIndex = data;
@@ -36,7 +40,12 @@ function initSearch() {
   
   // Gestion de la recherche
   function performSearch(query) {
-    if (!window.searchIndex || !query) return;
+    if (!query) return;
+    
+    if (!window.searchIndex) {
+      alert('Index de recherche en cours de chargement, veuillez patienter quelques secondes et réessayer.');
+      return;
+    }
     
     query = query.toLowerCase();
     const results = window.searchIndex.filter(item => {
