@@ -25,7 +25,7 @@ def find_pdfs_and_images(folder_path):
                     {
                         "title": item.replace(".pdf", "").replace(".PDF", ""),
                         "file": f"pdf/{folder_path.replace('content/', '').replace(os.sep, '/')}/{item}",
-                        "lang": "Français",  # Détection automatique possible ici
+                        "lang": "Français",
                     }
                 )
             elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
@@ -36,31 +36,54 @@ def find_pdfs_and_images(folder_path):
     return pdfs, images
 
 
-def generate_index_for_folder(folder_path, relative_path):
+def generate_index_for_folder(folder_path, relative_path, has_subfolders=False):
     """Génère un fichier _index.md pour un dossier"""
     pdfs, images = find_pdfs_and_images(folder_path)
 
-    if not pdfs and not images:
-        return False
-
-    # Détecter le nom du dossier parent pour le titre
-    folder_name = os.path.basename(folder_path)
-
-    frontmatter = {
-        "title": folder_name,
-        "description": f"Manuel de pièces pour {folder_name}",
-        "draft": False,
-    }
-
-    if pdfs:
-        frontmatter["manuals"] = pdfs
-
-    if images:
-        frontmatter["images"] = images
-
+    # Vérifier si _index.md existe déjà
     index_path = os.path.join(folder_path, "_index.md")
 
-    content = f"""---
+    # Pour un dossier de catégorie (sans PDFs mais avec sous-dossiers)
+    if not pdfs and not images and has_subfolders:
+        folder_name = os.path.basename(folder_path)
+
+        frontmatter = {
+            "title": folder_name,
+            "description": f"Manuels de pièces pour {folder_name}",
+            "draft": False,
+        }
+
+        content = f"""---
+{yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
+
+# {folder_name}
+
+Retrouvez tous les manuels de pièces pour {folder_name}.
+"""
+
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+        print(f"✓ Section: {relative_path}/_index.md")
+        return True
+
+    # Pour un dossier avec PDFs
+    if pdfs or images:
+        folder_name = os.path.basename(folder_path)
+
+        frontmatter = {
+            "title": folder_name,
+            "description": f"Manuel de pièces pour {folder_name}",
+            "draft": False,
+        }
+
+        if pdfs:
+            frontmatter["manuals"] = pdfs
+
+        if images:
+            frontmatter["images"] = images
+
+        content = f"""---
 {yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
 
 # {folder_name}
@@ -76,13 +99,15 @@ Manuel de pièces pour {folder_name}
 Pour toute question concernant ce modèle ou pour commander des pièces, n'hésitez pas à [nous contacter](/contact/).
 """
 
-    with open(index_path, "w", encoding="utf-8") as f:
-        f.write(content)
+        with open(index_path, "w", encoding="utf-8") as f:
+            f.write(content)
 
-    print(
-        f"✓ Généré: {relative_path}/_index.md ({len(pdfs)} PDFs, {len(images)} images)"
-    )
-    return True
+        print(
+            f"✓ Modèle: {relative_path}/_index.md ({len(pdfs)} PDFs, {len(images)} images)"
+        )
+        return True
+
+    return False
 
 
 def scan_manuals_folder():
@@ -95,14 +120,26 @@ def scan_manuals_folder():
 
     count = 0
 
-    # Parcourir récursivement
+    # D'abord, traiter tous les dossiers récursivement (du plus profond au plus superficiel)
+    all_dirs = []
     for root, dirs, files in os.walk(base_path):
-        # Ignorer les dossiers sans PDFs (dossiers de catégories)
+        all_dirs.append((root, dirs, files))
+
+    # Inverser pour traiter les dossiers enfants d'abord
+    all_dirs.reverse()
+
+    for root, dirs, files in all_dirs:
+        relative = root.replace(base_path, "").strip(os.sep)
+
+        # Vérifier si ce dossier a des sous-dossiers
+        has_subfolders = len(dirs) > 0
+
+        # Vérifier si ce dossier a des PDFs
         has_pdfs = any(f.lower().endswith(".pdf") for f in files)
 
-        if has_pdfs:
-            relative = root.replace(base_path, "").strip(os.sep)
-            if generate_index_for_folder(root, relative):
+        # Générer _index.md si nécessaire
+        if has_pdfs or has_subfolders:
+            if generate_index_for_folder(root, relative, has_subfolders):
                 count += 1
 
     print(f"\n✅ {count} fichiers _index.md générés")
