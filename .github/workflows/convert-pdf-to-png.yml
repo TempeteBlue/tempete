@@ -32,10 +32,13 @@ jobs:
             # Create output directory for this PDF
             output_dir="static/images/manuels/$(dirname "$rel_path")"
             mkdir -p "$output_dir"
-            # Convert first page to PNG
+            # Convert first page to PNG (skip errors)
             output_file="$output_dir/$(basename "$base_name")"
-            pdftoppm -png -f 1 -l 1 -singlefile "$pdf_file" "$output_file"
-            echo "Converted: $pdf_file -> ${output_file}.png"
+            if pdftoppm -png -f 1 -l 1 -singlefile "$pdf_file" "$output_file" 2>/dev/null; then
+              echo "Converted: $pdf_file -> ${output_file}.png"
+            else
+              echo "Skipped (error): $pdf_file"
+            fi
           done
 
       - name: Upload PNG artifacts
