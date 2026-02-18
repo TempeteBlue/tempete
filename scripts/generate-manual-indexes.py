@@ -9,11 +9,6 @@ import yaml
 from pathlib import Path
 
 
-def slugify(name):
-    """Convertit un nom en slug URL-friendly"""
-    return name.lower().replace(" ", "-")
-
-
 def find_pdfs_and_images(folder_path):
     """Trouve tous les PDFs et images dans un dossier"""
     pdfs = []
@@ -53,7 +48,6 @@ def generate_index_for_folder(folder_path, relative_path):
 
     frontmatter = {
         "title": folder_name,
-        "slug": slugify(folder_name),
         "description": f"Manuel de pièces pour {folder_name}",
         "draft": False,
     }

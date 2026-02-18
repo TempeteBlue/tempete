@@ -75,42 +75,6 @@
   </section>
   {{ end }}
   
-  <!-- Navigation hiérarchique des manuels (sous-dossiers) -->
-  {{ if .Sections }}
-  <section class="manual-categories">
-    <h2>Catégories</h2>
-    <div class="category-grid">
-      {{ range .Sections }}
-      <a href="{{ .RelPermalink }}" class="category-card">
-        <span class="category-icon">📂</span>
-        <h3>{{ .Title }}</h3>
-        <p>{{ len .Pages }} modèle(s)</p>
-      </a>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
-  
-  <!-- Liste des modèles (pages enfants) -->
-  {{ if .Pages }}
-  <section class="model-list">
-    <h2>Modèles disponibles</h2>
-    <div class="models-grid">
-      {{ range .Pages }}
-      <article class="model-card">
-        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-        {{ with .Params.years }}
-        <p class="model-years">Années: {{ . }}</p>
-        {{ end }}
-        <div class="model-actions">
-          <a href="{{ .RelPermalink }}" class="btn btn-small">Voir les manuels</a>
-        </div>
-      </article>
-      {{ end }}
-    </div>
-  </section>
-  {{ end }}
-  
   <!-- Contenu additionnel -->
   {{ if .Content }}
   <div class="page-content">
