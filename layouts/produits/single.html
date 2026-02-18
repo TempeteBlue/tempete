@@ -1,10 +1,12 @@
 {{ define "main" }}
 {{ $images := slice }}
 {{ $pdfs := slice }}
-{{ if .File }}
-{{ range (readDir (printf "content/%s" .File.Dir)) }}
+{{ $dir := "" }}
+{{ if .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
+{{ if $dir }}
+{{ range (readDir (printf "content/%s" $dir)) }}
   {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
-    {{ $images = $images | append (printf "%s%s" .File.Dir .Name) }}
+    {{ $images = $images | append (printf "%s%s" $dir .Name) }}
   {{ end }}
   {{ if hasSuffix .Name ".pdf" }}
     {{ $pdfs = $pdfs | append . }}
@@ -129,7 +131,7 @@
                 <h3>{{ .Name | replaceRE "\\.pdf$" "" }}</h3>
               </div>
               <div class="document-actions">
-                <a href="{{ printf "%s%s" $.File.Dir .Name | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                <a href="{{ printf "%s%s" $dir .Name | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
                   Télécharger PDF
                 </a>
               </div>
