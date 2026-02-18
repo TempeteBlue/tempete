@@ -1,5 +1,12 @@
 {{ define "main" }}
-====SINGLE-PAGE-TEMPLATE====
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "years" (.Params.years | default "")
+  "specs" (.Params.specs | default dict)
+  "manuals" (.Params.manuals | default slice)
+  "images" (.Params.images | default slice)
+) }}
 <div class="container page-container">
   <article class="manual-page">
     <header class="page-header">
@@ -13,16 +20,8 @@
     </header>
     
     <!-- Image Gallery / Carousel -->
-    {{ $images := slice }}
-    {{ $pdfs := slice }}
-    {{ $resources := .Resources.ByType "image" }}
-    {{ range $resources }}
-      {{ $images = $images | append .Permalink }}
-    {{ end }}
-    {{ $pdfResources := .Resources.ByType "application/pdf" }}
-    {{ range $pdfResources }}
-      {{ $pdfs = $pdfs | append (dict "name" .Name "url" .Permalink) }}
-    {{ end }}
+    {{ $images := $data.images }}
+    {{ $pdfs := $data.manuals }}
     {{ if $images }}
     <div class="image-carousel">
       {{ $imageCount := len $images }}
@@ -31,7 +30,7 @@
         <div class="carousel-track" id="carouselTrack">
           {{ range $images }}
           <div class="carousel-slide">
-            <img src="{{ . }}" alt="{{ $data.title }}">
+            <img src="{{ . | absURL }}" alt="{{ $data.title }}">
           </div>
           {{ end }}
         </div>
@@ -45,7 +44,7 @@
       </div>
       {{ else }}
       <div class="single-image">
-        <img src="{{ index $images 0 }}" alt="{{ $data.title }}">
+        <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
       </div>
       {{ end }}
     </div>
@@ -76,31 +75,18 @@
       {{ end }}
     </div>
     
-    <!-- Manuels (PDFs) détectés automatiquement -->
+    <!-- Manuels (PDFs) du frontmatter -->
     {{ if $pdfs }}
     <section class="manuals-section">
       <h2>📖 Manuels disponibles</h2>
       <div class="manuals-list">
         {{ range $pdfs }}
-        {{ $baseName := .name | replaceRE "\\.pdf$" "" }}
-        {{ $parts := split $baseName " " }}
-        {{ $modelNum := index $parts 0 }}
-        {{ $serialNum := "" }}
-        {{ if gt (len $parts) 1 }}
-          {{ $serialNum = index $parts (sub (len $parts) 1) }}
-        {{ end }}
         <div class="manual-item">
           <div class="manual-info">
-            <h3>
-              {{ if $serialNum }}
-              <span class="pdf-model">{{ $modelNum }}</span>
-              {{ if $serialNum }}<span class="pdf-serial">-{{ $serialNum }}</span>{{ end }}
-              {{ else }}
-              {{ $baseName }}
-              {{ end }}
-            </h3>
+            <h3>{{ .title }}</h3>
+            {{ if .lang }}<span class="pdf-lang">{{ .lang }}</span>{{ end }}
           </div>
-          <a href="{{ .url }}" class="btn btn-primary" target="_blank">
+          <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
