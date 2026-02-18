@@ -1,5 +1,5 @@
 ---
-title: "Souffleuses"
+title: "Pene"
 description: "Manuels de pièces pour souffleuses à neige"
 ---
 
