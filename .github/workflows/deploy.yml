@@ -93,7 +93,7 @@ jobs:
           python3 scripts/index-manuals.py || echo "Pas de script d'indexation"
 
       - name: Build Hugo site
-        run: hugo --gc --minify --baseURL "https://cedricbouffard.github.io/tempete/"
+        run: hugo --gc --minify --baseURL "https://tempeteblue.github.io/tempete/"
         env:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
