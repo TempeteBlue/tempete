@@ -7,6 +7,11 @@ hugo.exe
 hugo.darwin
 hugo.linux
 
+# Generated content (created during build)
+content/manuels/*/*/_index.md
+content/manuels/*/_index.md
+content/produits/*/index.md
+
 # Python
 __pycache__/
 *.py[cod]
