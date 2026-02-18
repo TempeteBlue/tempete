@@ -20,11 +20,11 @@
     <!-- Image Gallery / Carousel -->
     {{ $images := slice }}
     {{ $pdfs := slice }}
-    {{ $dir := "" }}
-    {{ if .File }}{{ $dir = .File.Dir }}{{ end }}
-    <!-- DEBUG: File={{ .File }} Path={{ .Path }} Dir={{ $dir }} -->
+    {{ $dir := .Path }}
+    <!-- DEBUG: Path={{ .Path }} Dir={{ $dir }} -->
+    {{ $fullDir := printf "content/%s" $dir }}
     {{ if $dir }}
-    {{ range (readDir $dir) }}
+    {{ range (readDir $fullDir) }}
       {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
         {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
       {{ end }}
