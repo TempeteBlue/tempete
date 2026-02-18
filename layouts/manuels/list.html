@@ -1,14 +1,86 @@
 {{ define "main" }}
-LIST-TEMPLATE-XXXXXXXXXXXX
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "years" (.Params.years | default "")
+  "specs" (.Params.specs | default dict)
+) }}
 <div class="container page-container">
   <header class="page-header">
-    <h1 class="page-title">{{ .Title }}</h1>
-    {{ if .Description }}
-    <p class="page-description">{{ .Description }}</p>
+    <h1 class="page-title">{{ $data.title }}</h1>
+    {{ if $data.description }}
+    <p class="page-description">{{ $data.description }}</p>
     {{ end }}
   </header>
   
-  <!-- Navigation hiérarchique des manuels -->
+  <!-- Image Gallery / Carousel -->
+  {{ $images := slice }}
+  {{ $pdfs := slice }}
+  {{ $dir := .Path }}
+  {{ $fullDir := printf "content/%s" $dir }}
+  {{ range (readDir $fullDir) }}
+    {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
+      {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
+    {{ end }}
+    {{ if hasSuffix .Name ".pdf" }}
+      {{ $pdfs = $pdfs | append (dict "name" .Name "dir" $dir) }}
+    {{ end }}
+  {{ end }}
+  {{ if $images }}
+  <div class="image-carousel">
+    {{ $imageCount := len $images }}
+    {{ if gt $imageCount 1 }}
+    <div class="carousel-container">
+      <div class="carousel-track" id="carouselTrack">
+        {{ range $images }}
+        <div class="carousel-slide">
+          <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+        </div>
+        {{ end }}
+      </div>
+      <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+      <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+      <div class="carousel-dots">
+        {{ range $i, $_ := $images }}
+        <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+        {{ end }}
+      </div>
+    </div>
+    {{ else }}
+    <div class="single-image">
+      <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
+    </div>
+    {{ end }}
+  </div>
+  {{ end }}
+  
+  <!-- Manuels (PDFs) détectés automatiquement -->
+  {{ if $pdfs }}
+  <section class="manuals-section">
+    <h2>📖 Manuels disponibles</h2>
+    <div class="manuals-list">
+      {{ range $pdfs }}
+      {{ $baseName := .name | replaceRE "\\.pdf$" "" }}
+      <div class="manual-item">
+        <div class="manual-info">
+          <h3>{{ $baseName }}</h3>
+        </div>
+        <a href="{{ printf "%s/%s" .dir .name | absURL }}" class="btn btn-primary" target="_blank">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="12" y1="18" x2="12" y2="12"></line>
+            <line x1="9" y1="15" x2="15" y2="15"></line>
+          </svg>
+          Télécharger
+        </a>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+  
+  <!-- Navigation hiérarchique des manuels (sous-dossiers) -->
   {{ if .Sections }}
   <section class="manual-categories">
     <h2>Catégories</h2>
@@ -24,7 +96,7 @@ LIST-TEMPLATE-XXXXXXXXXXXX
   </section>
   {{ end }}
   
-  <!-- Liste des modèles -->
+  <!-- Liste des modèles (pages enfants) -->
   {{ if .Pages }}
   <section class="model-list">
     <h2>Modèles disponibles</h2>
