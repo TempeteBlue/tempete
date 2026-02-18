@@ -1,40 +1,52 @@
 {{ define "main" }}
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "years" (.Params.years | default "")
+  "specs" (.Params.specs | default dict)
+) }}
 <div class="container page-container">
   <article class="manual-page">
     <header class="page-header">
-      <h1 class="page-title">{{ .Title }}</h1>
-      {{ if .Params.subtitle }}
-      <p class="page-subtitle">{{ .Params.subtitle }}</p>
+      <h1 class="page-title">{{ $data.title }}</h1>
+      {{ if $data.description }}
+      <p class="page-subtitle">{{ $data.description }}</p>
       {{ end }}
-      {{ if .Params.years }}
-      <p class="model-years-badge">Années: {{ .Params.years }}</p>
+      {{ if $data.years }}
+      <p class="model-years-badge">Années: {{ $data.years }}</p>
       {{ end }}
     </header>
     
     <!-- Image Gallery / Carousel -->
-    {{ if .Params.images }}
+    {{ $images := slice }}
+    {{ range (readDir (printf "content/%s" .File.Dir)) }}
+      {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
+        {{ $images = $images | append (printf "%s%s" .File.Dir .Name) }}
+      {{ end }}
+    {{ end }}
+    {{ if $images }}
     <div class="image-carousel">
-      {{ $imageCount := len .Params.images }}
+      {{ $imageCount := len $images }}
       {{ if gt $imageCount 1 }}
       <div class="carousel-container">
         <div class="carousel-track" id="carouselTrack">
-          {{ range .Params.images }}
+          {{ range $images }}
           <div class="carousel-slide">
-            <img src="{{ . | absURL }}" alt="{{ $.Title }}">
+            <img src="{{ . | absURL }}" alt="{{ $data.title }}">
           </div>
           {{ end }}
         </div>
         <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
         <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
         <div class="carousel-dots">
-          {{ range $i, $_ := .Params.images }}
+          {{ range $i, $_ := $images }}
           <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
           {{ end }}
         </div>
       </div>
       {{ else }}
       <div class="single-image">
-        <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}">
+        <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
       </div>
       {{ end }}
     </div>
@@ -42,10 +54,10 @@
     
     <!-- Informations du modèle -->
     <div class="model-info">
-      {{ if .Params.specs }}
+      {{ if $data.specs }}
       <div class="model-specs">
         <h2>Caractéristiques</h2>
-        {{ range $key, $value := .Params.specs }}
+        {{ range $key, $value := $data.specs }}
           {{ if reflect.IsMap $value }}
             <h3>{{ $key }}</h3>
             <dl class="specs-list">
@@ -65,17 +77,18 @@
       {{ end }}
     </div>
     
-    <!-- Manuels détectés automatiquement -->
-    {{ $pdfPath := printf "pdf/manuels/%s" .File.ContentBaseName }}
-    {{ $pdfFiles := "" }}
-    {{ if fileExists (printf "static/%s" $pdfPath) }}
-      {{ $pdfFiles = readDir (printf "static/%s" $pdfPath) }}
+    <!-- Manuels (PDFs) détectés automatiquement -->
+    {{ $pdfs := slice }}
+    {{ range (readDir (printf "content/%s" .File.Dir)) }}
+      {{ if hasSuffix .Name ".pdf" }}
+        {{ $pdfs = $pdfs | append . }}
+      {{ end }}
     {{ end }}
-    {{ if $pdfFiles }}
+    {{ if $pdfs }}
     <section class="manuals-section">
       <h2>📖 Manuels disponibles</h2>
       <div class="manuals-list">
-        {{ range $pdfFiles }}
+        {{ range $pdfs }}
         {{ $baseName := .Name | replaceRE "\\.pdf$" "" }}
         {{ $parts := split $baseName " " }}
         {{ $modelNum := index $parts 0 }}
@@ -94,7 +107,7 @@
               {{ end }}
             </h3>
           </div>
-          <a href="{{ printf "%s/%s" $pdfPath .Name | absURL }}" class="btn btn-primary" target="_blank">
+          <a href="{{ printf "%s%s" $.File.Dir .Name | absURL }}" class="btn btn-primary" target="_blank">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>

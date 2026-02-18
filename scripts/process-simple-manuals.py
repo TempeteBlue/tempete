@@ -101,11 +101,11 @@ def process_manual_folders():
                     }
                 )
 
-            # Générer le fichier markdown
+            # Générer le fichier _index.md dans le dossier du modèle
             md_content = generate_markdown(
                 metadata, model_name, category, manuals_data, images_data
             )
-            md_file = category_dir / f"{model_name}.md"
+            md_file = model_dir / "_index.md"
 
             with open(md_file, "w", encoding="utf-8") as f:
                 f.write(md_content)

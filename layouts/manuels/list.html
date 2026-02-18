@@ -31,8 +31,8 @@
       {{ range .Pages }}
       <article class="model-card">
         <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-        {{ if .Params.years }}
-        <p class="model-years">Années: {{ .Params.years }}</p>
+        {{ with .Params.years }}
+        <p class="model-years">Années: {{ . }}</p>
         {{ end }}
         <div class="model-actions">
           <a href="{{ .RelPermalink }}" class="btn btn-small">Voir les manuels</a>

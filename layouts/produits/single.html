@@ -1,10 +1,44 @@
 {{ define "main" }}
+{{ $images := slice }}
+{{ $pdfs := slice }}
+{{ range (readDir (printf "content/%s" .File.Dir)) }}
+  {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
+    {{ $images = $images | append (printf "%s%s" .File.Dir .Name) }}
+  {{ end }}
+  {{ if hasSuffix .Name ".pdf" }}
+    {{ $pdfs = $pdfs | append . }}
+  {{ end }}
+{{ end }}
 <div class="container page-container">
   <article class="product-page">
     <div class="product-layout">
       <!-- Colonne images -->
       <div class="product-gallery">
-        {{ if .Params.images }}
+        {{ if $images }}
+          {{ $imageCount := len $images }}
+          {{ if gt $imageCount 1 }}
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+              {{ range $images }}
+              <div class="carousel-slide">
+                <img src="{{ . | absURL }}" alt="{{ $.Title }}">
+              </div>
+              {{ end }}
+            </div>
+            <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+            <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+            <div class="carousel-dots">
+              {{ range $i, $_ := $images }}
+              <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+              {{ end }}
+            </div>
+          </div>
+          {{ else }}
+          <figure class="product-main-image">
+            <img src="{{ (index $images 0) | absURL }}" alt="{{ .Title }}" id="main-product-image">
+          </figure>
+          {{ end }}
+        {{ else if .Params.images }}
           {{ $imageCount := len .Params.images }}
           {{ if gt $imageCount 1 }}
           <div class="carousel-container">
@@ -83,7 +117,25 @@
         {{ end }}
         
         <!-- Documents / Manuels -->
-        {{ if .Params.documents }}
+        {{ if $pdfs }}
+        <section class="product-documents">
+          <h2>📖 Documentation</h2>
+          <div class="documents-list">
+            {{ range $pdfs }}
+            <div class="document-item">
+              <div class="document-info">
+                <h3>{{ .Name | replaceRE "\\.pdf$" "" }}</h3>
+              </div>
+              <div class="document-actions">
+                <a href="{{ printf "%s%s" $.File.Dir .Name | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                  Télécharger PDF
+                </a>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </section>
+        {{ else if .Params.documents }}
         <section class="product-documents">
           <h2>📖 Documentation</h2>
           <div class="documents-list">

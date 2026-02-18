@@ -1,22 +1,22 @@
 /* ===== Variables CSS - Style RadTech ===== */
 :root {
-  /* Couleurs principales style industriel/corporate */
-  --color-primary: #1a237e;        /* Bleu marine foncé */
-  --color-primary-dark: #0d1642;   /* Bleu très foncé */
-  --color-primary-light: #3949ab;  /* Bleu plus clair */
-  --color-accent: #c62828;         /* Rouge accent */
-  --color-accent-light: #e53935;   /* Rouge plus vif */
-  --color-secondary: #37474f;      /* Gris anthracite */
+  /* Couleurs principales */
+  --color-primary: #aa0432;        /* Rouge foncé */
+  --color-primary-dark: #7a0325;   /* Rouge plus foncé */
+  --color-primary-light: #c62828;  /* Rouge plus clair */
+  --color-accent: #aa0432;        /* Rouge accent */
+  --color-accent-light: #c62828;  /* Rouge plus vif */
+  --color-secondary: #6c6c72;     /* Gris */
   --color-success: #2e7d32;       /* Vert */
-  --color-danger: #c62828;         /* Rouge erreur */
+  --color-danger: #aa0432;        /* Rouge erreur */
   
   --color-bg: #ffffff;
-  --color-bg-alt: #f5f5f5;         /* Gris très clair */
-  --color-bg-dark: #1a237e;        /* Bleu marine pour footer */
-  --color-bg-section: #fafafa;     /* Sections alternées */
+  --color-bg-alt: #f5f5f5;       /* Gris très clair */
+  --color-bg-dark: #aa0432;      /* Rouge pour footer */
+  --color-bg-section: #fafafa;   /* Sections alternées */
   
-  --color-text: #212121;           /* Texte presque noir */
-  --color-text-light: #616161;     /* Texte gris */
+  --color-text: #212121;          /* Texte presque noir */
+  --color-text-light: #6c6c72;    /* Texte gris */
   --color-text-white: #ffffff;
   
   --font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
