@@ -803,6 +803,16 @@ a:hover {
   flex-shrink: 0;
 }
 
+/* PDF model/serial display */
+.pdf-model {
+  color: var(--color-primary);
+}
+
+.pdf-serial {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .related-products {
   margin-top: var(--spacing-3xl);
   padding-top: var(--spacing-2xl);

@@ -72,45 +72,6 @@
       {{ end }}
     </div>
     
-    <!-- Liste des manuels PDF -->
-    {{ if .Params.manuals }}
-    <section class="manuals-section">
-      <h2>📖 Manuels disponibles</h2>
-      <div class="manuals-list">
-        {{ range .Params.manuals }}
-        <div class="manual-item">
-          <div class="manual-info">
-            <h3>{{ .title }}</h3>
-            {{ if .description }}
-            <p>{{ .description }}</p>
-            {{ end }}
-            {{ if .date }}
-            <span class="manual-date">Mise à jour: {{ .date }}</span>
-            {{ end }}
-            {{ if .lang }}
-            <span class="manual-lang">Langue: {{ .lang }}</span>
-            {{ end }}
-          </div>
-          <div class="manual-actions">
-            <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="12" y1="18" x2="12" y2="12"></line>
-                <line x1="9" y1="15" x2="15" y2="15"></line>
-              </svg>
-              Télécharger PDF
-            </a>
-            {{ if .version }}
-            <span class="version-badge">v{{ .version }}</span>
-            {{ end }}
-          </div>
-        </div>
-        {{ end }}
-      </div>
-    </section>
-    {{ end }}
-    
     <!-- Manuels détectés automatiquement -->
     {{ $pdfPath := printf "pdf/manuels/%s" .File.ContentBaseName }}
     {{ $pdfFiles := "" }}
@@ -119,15 +80,35 @@
     {{ end }}
     {{ if $pdfFiles }}
     <section class="manuals-section">
-      <h2>📎 Documents associés</h2>
+      <h2>📖 Manuels disponibles</h2>
       <div class="manuals-list">
         {{ range $pdfFiles }}
+        {{ $baseName := .Name | replaceRE "\\.pdf$" "" }}
+        {{ $parts := split $baseName " " }}
+        {{ $modelNum := index $parts 0 }}
+        {{ $serialNum := "" }}
+        {{ if gt (len $parts) 1 }}
+          {{ $serialNum = index $parts (sub (len $parts) 1) }}
+        {{ end }}
         <div class="manual-item">
           <div class="manual-info">
-            <h3>{{ .Name | replaceRE "\\.pdf$" "" }}</h3>
+            <h3>
+              {{ if $serialNum }}
+              <span class="pdf-model">{{ $modelNum }}</span>
+              {{ if $serialNum }}<span class="pdf-serial">-{{ $serialNum }}</span>{{ end }}
+              {{ else }}
+              {{ $baseName }}
+              {{ end }}
+            </h3>
           </div>
-          <a href="{{ printf "%s/%s" $pdfPath .Name | absURL }}" class="btn btn-secondary" target="_blank">
-            Voir le PDF
+          <a href="{{ printf "%s/%s" $pdfPath .Name | absURL }}" class="btn btn-primary" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <line x1="9" y1="15" x2="15" y2="15"></line>
+            </svg>
+            Télécharger
           </a>
         </div>
         {{ end }}
