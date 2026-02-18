@@ -22,9 +22,10 @@
     {{ $pdfs := slice }}
     {{ $dir := "" }}
     {{ if .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
-    {{ $contentDir := printf "content/%s" $dir }}
+    {{ $contentDir := printf "%s" $dir }}
     {{ if $dir }}
-    {{ range (readDir $contentDir) }}
+    <!-- DEBUG: dir={{ $dir }} contentDir={{ $contentDir }} -->
+    {{ range (readDir $dir) }}
       {{ if or (hasSuffix .Name ".jpg") (hasSuffix .Name ".jpeg") (hasSuffix .Name ".png") (hasSuffix .Name ".webp") }}
         {{ $images = $images | append (printf "%s/%s" $dir .Name) }}
       {{ end }}
@@ -33,6 +34,7 @@
       {{ end }}
     {{ end }}
     {{ end }}
+    <!-- DEBUG: images={{ $images }} pdfs={{ $pdfs }} -->
     {{ if $images }}
     <div class="image-carousel">
       {{ $imageCount := len $images }}
