@@ -1,5 +1,4 @@
 {{ define "main" }}
-TRIGGER-BUILD-2026
 {{ $data := merge .Params (dict 
   "title" (.Params.title | default .Title)
   "description" (.Params.description | default "")
@@ -17,8 +16,9 @@ TRIGGER-BUILD-2026
   <!-- Image Gallery / Carousel -->
   {{ $images := slice }}
   {{ $pdfs := slice }}
-  {{ $dir := .Path }}
-  {{ if not $dir }}{{ $dir = .File.Dir }}{{ end }}
+  {{ $dir := "" }}
+  {{ with .File }}{{ $dir = .File.Dir }}{{ else }}{{ $dir = .Path }}{{ end }}
+  {{ $dir = trim $dir "/" }}
   {{ $fullDir := printf "content/%s" $dir }}
   {{ if and $dir (fileExists $fullDir) }}
   {{ range (readDir $fullDir) }}
