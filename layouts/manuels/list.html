@@ -186,7 +186,7 @@
   {{ end }}
 
   <!-- Contenu additionnel -->
-  {{ if .Content }}
+  {{ if and .Content (not (eq .Content (printf "<h1 id=\"%s\">%s</h1>" .Title .Title))) }}
   <div class="page-content">
     {{ .Content }}
   </div>
