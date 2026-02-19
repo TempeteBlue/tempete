@@ -1,43 +1,70 @@
 {{ define "main" }}
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "years" (.Params.years | default "")
+  "specs" (.Params.specs | default dict)
+  "manuals" (.Params.manuals | default slice)
+  "images" (.Params.images | default slice)
+) }}
+{{ $images := $data.images }}
+{{ $pdfs := $data.manuals }}
 <div class="container page-container">
   <header class="page-header">
-    <h1 class="page-title">{{ .Title }}</h1>
-    {{ if .Description }}
-    <p class="page-description">{{ .Description }}</p>
+    <h1 class="page-title">{{ $data.title }}</h1>
+    {{ if $data.description }}
+    <p class="page-description">{{ $data.description }}</p>
+    {{ end }}
+    {{ if $data.years }}
+    <p class="page-description">Années: {{ $data.years }}</p>
     {{ end }}
   </header>
-
+  
   <!-- Navigation vers les sous-dossiers -->
   {{ if .Sections }}
-  <section class="product-categories">
-    <h2>📁 Catégories</h2>
+  <section class="manual-categories">
+    <h2>📁 Dossiers</h2>
     <div class="category-grid">
       {{ range .Sections }}
+      {{ $itemCount := len .Pages }}
+      {{ if and (eq $itemCount 0) .Params.manuals }}
+        {{ $itemCount = len .Params.manuals }}
+      {{ end }}
       <a href="{{ .RelPermalink }}" class="category-card">
         <span class="category-icon">📂</span>
         <h3>{{ .Title }}</h3>
-        <p>{{ len .Pages }} élément(s)</p>
+        <p>{{ $itemCount }} élément(s)</p>
       </a>
       {{ end }}
     </div>
   </section>
   {{ end }}
-</div>
-{{ end }}
 
-{{ define "scripts" }}
-<script>
-// Filtres simples côté client
-document.getElementById('category-filter')?.addEventListener('change', function() {
-  const category = this.value;
-  const cards = document.querySelectorAll('.product-card');
-  cards.forEach(card => {
-    if (!category || card.dataset.category === category) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-});
-</script>
+  <!-- Pages régulières (produits sans sous-dossiers) -->
+  {{ if .Pages }}
+  <section class="manual-pages">
+    <h2>📄 Produits</h2>
+    <div class="category-grid">
+      {{ range .Pages }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📄</span>
+        <h3>{{ .Title }}</h3>
+        {{ if .Description }}
+        <p>{{ .Description }}</p>
+        {{ else }}
+        <p>Voir les détails</p>
+        {{ end }}
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+  
+  <!-- Contenu additionnel -->
+  {{ if .Content }}
+  <div class="page-content">
+    {{ .Content }}
+  </div>
+  {{ end }}
+</div>
 {{ end }}

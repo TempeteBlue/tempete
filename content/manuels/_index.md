@@ -11,3 +11,9 @@ Bienvenue dans notre section de documentation technique. Vous trouverez ici tous
 
 Choisissez une catégorie ci-dessous pour accéder aux manuels correspondants :
 
+- [Balais](/tempete/manuels/balais/)
+- [Débris](/tempete/manuels/debris/)
+- [Lames](/tempete/manuels/lames/)
+- [Options](/tempete/manuels/options/)
+- [Pene](/tempete/manuels/pene/)
+
