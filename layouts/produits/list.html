@@ -22,40 +22,6 @@
     </div>
   </section>
   {{ end }}
-  
-  <!-- Filtres (affichés uniquement s'il y a des produits) -->
-  {{ if .Pages }}
-  <div class="filters">
-    <div class="filter-group">
-      <label for="category-filter">Catégorie:</label>
-      <select id="category-filter" class="filter-select">
-        <option value="">Toutes</option>
-        {{ range .Site.Taxonomies.categories }}
-        <option value="{{ .Page.Title }}">{{ .Page.Title }}</option>
-        {{ end }}
-      </select>
-    </div>
-    <div class="filter-group">
-      <label for="sort-filter">Trier par:</label>
-      <select id="sort-filter" class="filter-select">
-        <option value="name">Nom</option>
-        <option value="price-asc">Prix croissant</option>
-        <option value="price-desc">Prix décroissant</option>
-      </select>
-    </div>
-  </div>
-  {{ end }}
-  
-  <!-- Grille de produits -->
-  {{ if .Pages }}
-  <div class="products-grid" id="products-grid">
-    {{ range .Pages }}
-    {{ partial "product-card.html" . }}
-    {{ end }}
-  </div>
-  {{ else }}
-  <p class="no-products">Aucun produit disponible pour le moment.</p>
-  {{ end }}
 </div>
 {{ end }}
 
