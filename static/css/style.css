@@ -1630,6 +1630,113 @@ h4 { font-size: var(--font-size-xl); }
   }
 }
 
+/* ===== SEARCH RESULTS MODAL ===== */
+.search-results {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-results-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.search-results-content {
+  position: relative;
+  background: white;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  max-width: 700px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  z-index: 1;
+}
+
+.search-close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  background: var(--color-bg-alt);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.search-close:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+.search-results-content h2 {
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-primary);
+  padding-right: var(--spacing-xl);
+}
+
+.search-results-content ul {
+  list-style: none;
+  padding: 0;
+}
+
+.search-results-content li {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid #e9ecef;
+}
+
+.search-results-content li:last-child {
+  border-bottom: none;
+}
+
+.search-results-content a {
+  display: block;
+  text-decoration: none;
+  color: var(--color-text);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: background var(--transition-fast);
+}
+
+.search-results-content a:hover {
+  background: var(--color-bg-alt);
+}
+
+.search-results-content strong {
+  display: block;
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.search-results-content p {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* ===== UTILITAIRES ===== */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
