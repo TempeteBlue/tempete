@@ -6,8 +6,25 @@
     <p class="page-description">{{ .Description }}</p>
     {{ end }}
   </header>
+
+  <!-- Navigation vers les sous-dossiers -->
+  {{ if .Sections }}
+  <section class="product-categories">
+    <h2>📁 Catégories</h2>
+    <div class="category-grid">
+      {{ range .Sections }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📂</span>
+        <h3>{{ .Title }}</h3>
+        <p>{{ len .Pages }} élément(s)</p>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
   
-  <!-- Filtres -->
+  <!-- Filtres (affichés uniquement s'il y a des produits) -->
+  {{ if .Pages }}
   <div class="filters">
     <div class="filter-group">
       <label for="category-filter">Catégorie:</label>
@@ -27,6 +44,7 @@
       </select>
     </div>
   </div>
+  {{ end }}
   
   <!-- Grille de produits -->
   {{ if .Pages }}

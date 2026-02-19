@@ -90,6 +90,26 @@
     </div>
   </section>
   {{ end }}
+
+  <!-- Pages régulières (modèles sans sous-dossiers) -->
+  {{ if .Pages }}
+  <section class="manual-pages">
+    <h2>📄 Modèles</h2>
+    <div class="category-grid">
+      {{ range .Pages }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📄</span>
+        <h3>{{ .Title }}</h3>
+        {{ if .Description }}
+        <p>{{ .Description }}</p>
+        {{ else }}
+        <p>Voir les détails</p>
+        {{ end }}
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
   
   <!-- Contenu additionnel -->
   {{ if .Content }}
