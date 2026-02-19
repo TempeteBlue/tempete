@@ -37,7 +37,7 @@
             {{ $pdfForImg := "" }}
             {{ range $pdfs }}
               {{ $pdfBase := .title }}
-              {{ $imgFile := base $imgName }}
+              {{ $imgFile := path.Base $imgName }}
               {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
               {{ if in $pdfBase $imgBase }}
                 {{ $pdfForImg = .file }}
@@ -67,7 +67,7 @@
         {{ $pdfForSingleImg := "" }}
         {{ range $pdfs }}
           {{ $pdfBase := .title }}
-          {{ $imgFile := base $singleImg }}
+          {{ $imgFile := path.Base $singleImg }}
           {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
           {{ if in $pdfBase $imgBase }}
             {{ $pdfForSingleImg = .file }}
