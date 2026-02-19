@@ -29,15 +29,18 @@
       <div class="image-carousel">
         {{ $imageCount := len $images }}
         {{ $firstPdf := index $pdfs 0 }}
-        {{ if $firstPdf }}
-        <a href="{{ $firstPdf.file | absURL }}" target="_blank">
-        {{ end }}
         {{ if gt $imageCount 1 }}
         <div class="carousel-container">
           <div class="carousel-track" id="carouselTrack">
             {{ range $images }}
             <div class="carousel-slide">
+              {{ if $firstPdf }}
+              <a href="{{ $firstPdf.file | absURL }}" target="_blank">
+              {{ end }}
               <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+              {{ if $firstPdf }}
+              </a>
+              {{ end }}
             </div>
             {{ end }}
           </div>
@@ -51,11 +54,14 @@
         </div>
         {{ else }}
         <div class="single-image">
+          {{ if $firstPdf }}
+          <a href="{{ $firstPdf.file | absURL }}" target="_blank">
+          {{ end }}
           <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
+          {{ if $firstPdf }}
+          </a>
+          {{ end }}
         </div>
-        {{ end }}
-        {{ if $firstPdf }}
-        </a>
         {{ end }}
       </div>
     </div>
