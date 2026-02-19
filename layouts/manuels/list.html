@@ -33,12 +33,22 @@
         <div class="carousel-container">
           <div class="carousel-track" id="carouselTrack">
             {{ range $images }}
+            {{ $imgName := . }}
+            {{ $pdfForImg := "" }}
+            {{ range $pdfs }}
+              {{ $pdfBase := .title }}
+              {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgName }}
+              {{ $imgBase = replace $imgBase "images/" "" }}
+              {{ if in $pdfBase $imgBase }}
+                {{ $pdfForImg = .file }}
+              {{ end }}
+            {{ end }}
             <div class="carousel-slide">
-              {{ if $firstPdf }}
-              <a href="{{ $firstPdf.file | absURL }}" target="_blank">
+              {{ if $pdfForImg }}
+              <a href="{{ $pdfForImg | absURL }}" target="_blank">
               {{ end }}
               <img src="{{ . | absURL }}" alt="{{ $data.title }}">
-              {{ if $firstPdf }}
+              {{ if $pdfForImg }}
               </a>
               {{ end }}
             </div>
@@ -53,12 +63,22 @@
           </div>
         </div>
         {{ else }}
-        <div class="single-image">
-          {{ if $firstPdf }}
-          <a href="{{ $firstPdf.file | absURL }}" target="_blank">
+        {{ $singleImg := index $images 0 }}
+        {{ $pdfForSingleImg := "" }}
+        {{ range $pdfs }}
+          {{ $pdfBase := .title }}
+          {{ $imgBase := replaceRE "\\.[^.]+$" "" $singleImg }}
+          {{ $imgBase = replace $imgBase "images/" "" }}
+          {{ if in $pdfBase $imgBase }}
+            {{ $pdfForSingleImg = .file }}
           {{ end }}
-          <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
-          {{ if $firstPdf }}
+        {{ end }}
+        <div class="single-image">
+          {{ if $pdfForSingleImg }}
+          <a href="{{ $pdfForSingleImg | absURL }}" target="_blank">
+          {{ end }}
+          <img src="{{ $singleImg | absURL }}" alt="{{ $data.title }}">
+          {{ if $pdfForSingleImg }}
           </a>
           {{ end }}
         </div>
