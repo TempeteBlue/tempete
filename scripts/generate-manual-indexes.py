@@ -65,8 +65,6 @@ def generate_index_for_folder(folder_path, relative_path, has_subfolders=False):
 {yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
 
 # {folder_name}
-
-Retrouvez tous les manuels de pièces pour {folder_name}.
 """
 
         with open(index_path, "w", encoding="utf-8") as f:
@@ -95,8 +93,6 @@ Retrouvez tous les manuels de pièces pour {folder_name}.
 {yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
 
 # {folder_name}
-
-Manuel de pièces pour {folder_name}
 
 ## Caractéristiques
 
