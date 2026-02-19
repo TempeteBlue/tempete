@@ -1,4 +1,4 @@
 ---
 title: "Balais"
-description: "Nos balais rotatifs professionnels"
+description: "Nos balais rotatifs usagés"
 ---
