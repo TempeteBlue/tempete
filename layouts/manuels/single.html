@@ -19,94 +19,111 @@
       {{ end }}
     </header>
     
-    <!-- Image Gallery / Carousel -->
-    {{ $images := $data.images }}
-    {{ $pdfs := $data.manuals }}
-    {{ if $images }}
-    <div class="image-carousel">
-      {{ $imageCount := len $images }}
-      {{ if gt $imageCount 1 }}
-      <div class="carousel-container">
-        <div class="carousel-track" id="carouselTrack">
-          {{ range $images }}
-          <div class="carousel-slide">
-            <img src="{{ . | absURL }}" alt="{{ $data.title }}">
-          </div>
-          {{ end }}
-        </div>
-        <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
-        <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
-        <div class="carousel-dots">
-          {{ range $i, $_ := $images }}
-          <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
-          {{ end }}
-        </div>
-      </div>
-      {{ else }}
-      <div class="single-image">
-        <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
-      </div>
-      {{ end }}
-    </div>
-    {{ end }}
-    
-    <!-- Informations du modèle -->
-    <div class="model-info">
-      {{ if $data.specs }}
-      <div class="model-specs">
-        <h2>Caractéristiques</h2>
-        {{ range $key, $value := $data.specs }}
-          {{ if reflect.IsMap $value }}
-            <h3>{{ $key }}</h3>
-            <dl class="specs-list">
-              {{ range $specKey, $specValue := $value }}
-              <dt>{{ $specKey }}</dt>
-              <dd>{{ $specValue }}</dd>
+    <!-- Two column layout: image left, content right -->
+    <div class="manual-layout">
+      <!-- Left column: Image Gallery / Carousel -->
+      <div class="manual-image-column">
+        {{ $images := $data.images }}
+        {{ if $images }}
+        <div class="image-carousel">
+          {{ $imageCount := len $images }}
+          {{ if gt $imageCount 1 }}
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+              {{ range $images }}
+              <div class="carousel-slide">
+                <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+              </div>
               {{ end }}
-            </dl>
-          {{ else }}
-            <dl class="specs-list">
-              <dt>{{ $key }}</dt>
-              <dd>{{ $value }}</dd>
-            </dl>
-          {{ end }}
-        {{ end }}
-      </div>
-      {{ end }}
-    </div>
-    
-    <!-- Manuels (PDFs) du frontmatter -->
-    {{ if $pdfs }}
-    <section class="manuals-section">
-      <h2>📖 Manuels disponibles</h2>
-      <div class="manuals-list">
-        {{ range $pdfs }}
-        <div class="manual-item">
-          <div class="manual-info">
-            <h3>{{ .title }}</h3>
-            {{ if .lang }}<span class="pdf-lang">{{ .lang }}</span>{{ end }}
+            </div>
+            <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+            <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+            <div class="carousel-dots">
+              {{ range $i, $_ := $images }}
+              <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+              {{ end }}
+            </div>
           </div>
-          <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="12" y1="18" x2="12" y2="12"></line>
-              <line x1="9" y1="15" x2="15" y2="15"></line>
-            </svg>
-            Télécharger
-          </a>
+          {{ else }}
+          <div class="single-image">
+            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
+          </div>
+          {{ end }}
         </div>
         {{ end }}
       </div>
-    </section>
-    {{ end }}
-    
-    <!-- Contenu additionnel -->
-    {{ if .Content }}
-    <div class="page-content">
-      {{ .Content }}
+      
+      <!-- Right column: Content -->
+      <div class="manual-content-column">
+        <!-- Informations du modèle -->
+        <div class="model-info">
+          {{ if $data.specs }}
+          <div class="model-specs">
+            <h2>Caractéristiques</h2>
+            {{ range $key, $value := $data.specs }}
+              {{ if reflect.IsMap $value }}
+                <h3>{{ $key }}</h3>
+                <dl class="specs-list">
+                  {{ range $specKey, $specValue := $value }}
+                  <dt>{{ $specKey }}</dt>
+                  <dd>{{ $specValue }}</dd>
+                  {{ end }}
+                </dl>
+              {{ else }}
+                <dl class="specs-list">
+                  <dt>{{ $key }}</dt>
+                  <dd>{{ $value }}</dd>
+                </dl>
+              {{ end }}
+            {{ end }}
+          </div>
+          {{ end }}
+        </div>
+        
+        <!-- Manuels (PDFs) du frontmatter -->
+        {{ $pdfs := $data.manuals }}
+        {{ if $pdfs }}
+        <section class="manuals-section">
+          <h2>📖 Manuels disponibles</h2>
+          <div class="manuals-list">
+            {{ range $pdf }}
+            <div class="manual-item">
+              <div class="manual-info">
+                <h3>{{ .title }}</h3>
+                {{ if .lang }}<span class="pdf-lang">{{ .lang }}</span>{{ end }}
+                
+                {{ $parts := split .title " " }}
+                {{ $partCount := len $parts }}
+                {{ if ge $partCount 3 }}
+                <div class="pdf-meta">
+                  <p><strong>Numéro de modèle:</strong> {{ index $parts 0 }}</p>
+                  <p><strong>Numéro de série:</strong> {{ index $parts 2 }}</p>
+                </div>
+                {{ end }}
+              </div>
+              <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="12" y1="18" x2="12" y2="12"></line>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                Télécharger
+              </a>
+            </div>
+            {{ end }}
+          </div>
+        </section>
+        {{ end }}
+        
+        <!-- Contenu additionnel -->
+        {{ if .Content }}
+        <div class="page-content">
+          {{ .Content }}
+        </div>
+        {{ end }}
+      </div>
     </div>
-    {{ end }}
     
     <!-- Navigation -->
     <nav class="page-navigation">

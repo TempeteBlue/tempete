@@ -972,6 +972,63 @@ a:hover {
   letter-spacing: 0.5px;
 }
 
+/* Two column layout for manual page */
+.manual-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2xl);
+  margin-top: var(--spacing-xl);
+}
+
+.manual-image-column {
+  position: sticky;
+  top: var(--spacing-xl);
+  align-self: start;
+}
+
+.manual-image-column .image-carousel {
+  background: var(--color-bg-alt);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+}
+
+.manual-image-column .single-image img,
+.manual-image-column .carousel-slide img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 70vh;
+}
+
+.manual-content-column {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .manual-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .manual-image-column {
+    position: static;
+  }
+}
+
+/* PDF meta info */
+.pdf-meta {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.pdf-meta p {
+  margin: var(--spacing-xs) 0;
+}
+
+.pdf-meta strong {
+  color: var(--color-primary);
+}
+
 .specs-list dd {
   font-size: var(--font-size-lg);
   color: var(--color-text);
