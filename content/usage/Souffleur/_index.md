@@ -1,4 +1,4 @@
 ---
-title: "Souffleuses"
-description: "Nos souffleuses à neige usagées"
+title: "Souffleur"
+description: "Nos souffleuses à neige professionnelles"
 ---
