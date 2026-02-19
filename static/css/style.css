@@ -1,22 +1,22 @@
 /* ===== Variables CSS - Style RadTech ===== */
 :root {
   /* Couleurs principales */
-  --color-primary: #aa0432;        /* Rouge foncé */
-  --color-primary-dark: #7a0325;   /* Rouge plus foncé */
-  --color-primary-light: #c62828;  /* Rouge plus clair */
-  --color-accent: #aa0432;        /* Rouge accent */
-  --color-accent-light: #c62828;  /* Rouge plus vif */
-  --color-secondary: #6c6c72;     /* Gris */
+  --color-primary: #6c6c72;        /* Gris */
+  --color-primary-dark: #4a4a4f;   /* Gris foncé */
+  --color-primary-light: #8a8a90;  /* Gris clair */
+  --color-accent: #6c6c72;       /* Gris accent */
+  --color-accent-light: #8a8a90;  /* Gris plus clair */
+  --color-secondary: #aa0432;      /* Rouge */
   --color-success: #2e7d32;       /* Vert */
   --color-danger: #aa0432;        /* Rouge erreur */
   
   --color-bg: #ffffff;
   --color-bg-alt: #f5f5f5;       /* Gris très clair */
-  --color-bg-dark: #aa0432;      /* Rouge pour footer */
-  --color-bg-section: #fafafa;   /* Sections alternées */
+  --color-bg-dark: #6c6c72;       /* Gris pour footer */
+  --color-bg-section: #fafafa;    /* Sections alternées */
   
   --color-text: #212121;          /* Texte presque noir */
-  --color-text-light: #6c6c72;    /* Texte gris */
+  --color-text-light: #aa0432;    /* Texte rouge */
   --color-text-white: #ffffff;
   
   --font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
