@@ -5,6 +5,7 @@ on:
     branches: [main, master]
     paths:
       - 'content/manuels/**/*.pdf'
+      - 'static/pdf/**/*.pdf'
   workflow_dispatch:
 
 jobs:
