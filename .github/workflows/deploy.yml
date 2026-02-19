@@ -136,6 +136,11 @@ jobs:
           echo "📦 Traitement des dossiers de produits simples..."
           python3 scripts/process-simple-products.py || echo "Pas de dossiers simples à traiter"
 
+      - name: Process simple usage folders
+        run: |
+          echo "🔧 Traitement des dossiers d'équipements usagés simples..."
+          python3 scripts/process-simple-usages.py || echo "Pas de dossiers simples à traiter"
+
       - name: Generate manual indexes from PDF folders
         run: |
           echo "📄 Génération des index pour les dossiers de manuels..."
@@ -145,6 +150,11 @@ jobs:
         run: |
           echo "📦 Génération des index pour les dossiers de produits..."
           python3 scripts/generate-product-indexes.py || echo "Pas de dossiers à indexer"
+
+      - name: Generate usage indexes from folders
+        run: |
+          echo "🔧 Génération des index pour les dossiers d'équipements usagés..."
+          python3 scripts/generate-usage-indexes.py || echo "Pas de dossiers à indexer"
 
       - name: Build Hugo site
         run: hugo --gc --minify --baseURL "https://www.souffleur.ca/"
