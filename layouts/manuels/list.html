@@ -82,7 +82,7 @@
     <div class="category-grid">
       {{ range .Sections }}
       {{ $itemCount := len .Pages }}
-      {{ if eq $itemCount 0 }}
+      {{ if and (eq $itemCount 0) .Params.manuals }}
         {{ $itemCount = len .Params.manuals }}
       {{ end }}
       <a href="{{ .RelPermalink }}" class="category-card">
