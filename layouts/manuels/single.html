@@ -101,10 +101,15 @@
           <h2>📖 Manuels disponibles</h2>
           <div class="manuals-list">
             {{ range $pdf }}
-            <div class="manual-item">
-              <div class="manual-info">
-                <h3>{{ .title }}</h3>
-                {{ if .lang }}<span class="pdf-lang">{{ .lang }}</span>{{ end }}
+             <div class="manual-item">
+               <div class="manual-info">
+                 <h3>{{ .title }}</h3>
+                 {{ $pdfLang := .lang }}
+                 {{ if not $pdfLang }}
+                   {{ if in .title "-A " }}{{ $pdfLang = "Anglais" }}{{ end }}
+                   {{ if in .title "-F " }}{{ $pdfLang = "Français" }}{{ end }}
+                 {{ end }}
+                 {{ if $pdfLang }}<span class="pdf-lang">{{ $pdfLang }}</span>{{ end }}
                 
                 {{ $parts := split .title " " }}
                 {{ $partCount := len $parts }}
