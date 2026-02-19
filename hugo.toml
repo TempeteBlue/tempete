@@ -44,7 +44,7 @@ title = 'Concessionnaire Souffleuses & Pièces'
     
   [[menu.main]]
     identifier = "usage"
-    name = "Usagé"
+    name = "Usagés"
     url = "/usage/"
     weight = 20
 
