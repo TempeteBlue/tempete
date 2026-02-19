@@ -37,8 +37,8 @@
             {{ $pdfForImg := "" }}
             {{ range $pdfs }}
               {{ $pdfBase := .title }}
-              {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgName }}
-              {{ $imgBase = replace $imgBase "images/" "" }}
+              {{ $imgFile := base $imgName }}
+              {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
               {{ if in $pdfBase $imgBase }}
                 {{ $pdfForImg = .file }}
               {{ end }}
@@ -67,12 +67,13 @@
         {{ $pdfForSingleImg := "" }}
         {{ range $pdfs }}
           {{ $pdfBase := .title }}
-          {{ $imgBase := replaceRE "\\.[^.]+$" "" $singleImg }}
-          {{ $imgBase = replace $imgBase "images/" "" }}
+          {{ $imgFile := base $singleImg }}
+          {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
           {{ if in $pdfBase $imgBase }}
             {{ $pdfForSingleImg = .file }}
           {{ end }}
         {{ end }}
+        
         <div class="single-image">
           {{ if $pdfForSingleImg }}
           <a href="{{ $pdfForSingleImg | absURL }}" target="_blank">
