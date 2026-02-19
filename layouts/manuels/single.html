@@ -24,9 +24,14 @@
       <!-- Left column: Image Gallery / Carousel -->
       <div class="manual-image-column">
         {{ $images := $data.images }}
+        {{ $pdfs := $data.manuals }}
         {{ if $images }}
         <div class="image-carousel">
           {{ $imageCount := len $images }}
+          {{ $firstPdf := index $pdfs 0 }}
+          {{ if $firstPdf }}
+          <a href="{{ $firstPdf.file | absURL }}" target="_blank">
+          {{ end }}
           {{ if gt $imageCount 1 }}
           <div class="carousel-container">
             <div class="carousel-track" id="carouselTrack">
@@ -48,6 +53,9 @@
           <div class="single-image">
             <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}">
           </div>
+          {{ end }}
+          {{ if $firstPdf }}
+          </a>
           {{ end }}
         </div>
         {{ end }}
