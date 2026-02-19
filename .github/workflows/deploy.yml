@@ -118,7 +118,52 @@ jobs:
           echo "🧹 Nettoyage du contenu généré..."
           # Delete ALL generated markdown files in content/ (except _index.md and keep PNGs)
           find content/ -name "*.md" -type f ! -name "_index.md" -delete 2>/dev/null || true
-          echo "✅ Nettoyage terminé"
+          echo "✅ Nettoyage des fichiers markdown terminé"
+
+      - name: Clean static folders
+        run: |
+          echo "🧹 Nettoyage des dossiers statiques obsolètes..."
+          # Sync static/images/produits with content/produits
+          if [ -d "content/produits" ] && [ -d "static/images/produits" ]; then
+            for category_dir in static/images/produits/*/; do
+              category=$(basename "$category_dir")
+              if [ ! -d "content/produits/$category" ]; then
+                echo "  🗑️ Suppression: static/images/produits/$category"
+                rm -rf "$category_dir"
+              fi
+            done
+          fi
+          # Sync static/pdf/produits with content/produits
+          if [ -d "content/produits" ] && [ -d "static/pdf/produits" ]; then
+            for category_dir in static/pdf/produits/*/; do
+              category=$(basename "$category_dir")
+              if [ ! -d "content/produits/$category" ]; then
+                echo "  🗑️ Suppression: static/pdf/produits/$category"
+                rm -rf "$category_dir"
+              fi
+            done
+          fi
+          # Sync static/images/usages with content/usages
+          if [ -d "content/usages" ] && [ -d "static/images/usages" ]; then
+            for category_dir in static/images/usages/*/; do
+              category=$(basename "$category_dir")
+              if [ ! -d "content/usages/$category" ]; then
+                echo "  🗑️ Suppression: static/images/usages/$category"
+                rm -rf "$category_dir"
+              fi
+            done
+          fi
+          # Sync static/pdf/usages with content/usages
+          if [ -d "content/usages" ] && [ -d "static/pdf/usages" ]; then
+            for category_dir in static/pdf/usages/*/; do
+              category=$(basename "$category_dir")
+              if [ ! -d "content/usages/$category" ]; then
+                echo "  🗑️ Suppression: static/pdf/usages/$category"
+                rm -rf "$category_dir"
+              fi
+            done
+          fi
+          echo "✅ Nettoyage des dossiers statiques terminé"
 
       - name: Generate product pages from data
         run: |
