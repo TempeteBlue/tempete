@@ -881,6 +881,12 @@ h4 { font-size: var(--font-size-xl); }
   gap: var(--spacing-lg);
 }
 
+.manuals-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
 .manual-item {
   display: flex;
   align-items: center;
