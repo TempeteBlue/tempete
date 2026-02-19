@@ -58,9 +58,8 @@ def generate_product_index(folder_path, category, product_name):
     if "price" in info:
         frontmatter["price"] = info["price"]
 
-    # Ajouter les catégories
-    if "categories" in info:
-        frontmatter["categories"] = info["categories"]
+    # Catégorie basée sur le nom du dossier (pas sur le YAML)
+    frontmatter["categories"] = [category]
 
     # Ajouter les images avec le bon chemin
     if images:

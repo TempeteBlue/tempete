@@ -70,9 +70,8 @@ def generate_usage_index(folder_path, category, usage_name):
     if "hours" in info:
         frontmatter["hours"] = info["hours"]
 
-    # Ajouter les catégories
-    if "categories" in info:
-        frontmatter["categories"] = info["categories"]
+    # Catégorie basée sur le nom du dossier (pas sur le YAML)
+    frontmatter["categories"] = [category]
 
     # Ajouter les images avec le bon chemin
     if images:
