@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Script pour traiter les dossiers de produits simples
-Structure attendue: content/produits/<produit>/
+Script pour traiter les dossiers de produits avec structure par catégorie
+Structure attendue: content/produits/<categorie>/<produit>/
   - info.yaml (métadonnées)
   - *.jpg, *.png, *.jpeg (images)
   - *.pdf (documents/fiches techniques)
 
-Le script copie les images vers static/images/produits/ et génère le fichier .md
+Le script copie les images vers static/images/produits/<categorie>/ et génère le fichier .md
 """
 
 import sys
@@ -27,76 +27,89 @@ STATIC_IMAGES_DIR = Path("static/images/produits")
 
 
 def process_product_folders():
-    """Traite tous les dossiers de produits"""
+    """Traite tous les dossiers de produits (structure: categorie/produit/)"""
 
-    for product_dir in CONTENT_DIR.iterdir():
-        if not product_dir.is_dir() or product_dir.name.startswith("_"):
+    # Parcourir les catégories (sous-dossiers de content/produits)
+    for category_dir in CONTENT_DIR.iterdir():
+        if not category_dir.is_dir() or category_dir.name.startswith("_"):
             continue
 
-        yaml_file = product_dir / "info.yaml"
+        category = category_dir.name
 
-        if not yaml_file.exists():
-            continue
+        # Parcourir les produits dans chaque catégorie
+        for product_dir in category_dir.iterdir():
+            if not product_dir.is_dir() or product_dir.name.startswith("_"):
+                continue
 
-        # Lire les métadonnées
-        with open(yaml_file, "r", encoding="utf-8") as f:
-            metadata = yaml.safe_load(f)
+            yaml_file = product_dir / "info.yaml"
 
-        product_name = product_dir.name
-        pdf_target_dir = STATIC_PDF_DIR / product_name
-        pdf_target_dir.mkdir(parents=True, exist_ok=True)
+            if not yaml_file.exists():
+                continue
 
-        # Copier les images
-        images_data = []
-        image_target_dir = STATIC_IMAGES_DIR / product_name
-        image_target_dir.mkdir(parents=True, exist_ok=True)
-        image_files = (
-            list(product_dir.glob("*.jpg"))
-            + list(product_dir.glob("*.jpeg"))
-            + list(product_dir.glob("*.png"))
-            + list(product_dir.glob("*.webp"))
-        )
-        image_files = [f for f in image_files if f.name != "desktop.ini"]
+            # Lire les métadonnées
+            with open(yaml_file, "r", encoding="utf-8") as f:
+                metadata = yaml.safe_load(f)
 
-        for img_file in image_files:
-            target_img = image_target_dir / img_file.name
-            shutil.copy2(img_file, target_img)
-            images_data.append(f"images/produits/{product_name}/{img_file.name}")
-            print(f"  🖼️ Copié: {img_file.name}")
+            product_name = product_dir.name
 
-        # Copier les PDFs et créer la liste des documents
-        documents_data = []
-        pdf_files = list(product_dir.glob("*.pdf"))
-        pdf_files = [f for f in pdf_files if f.name != "desktop.ini"]
+            # Créer les dossiers de destination avec la structure categorie/produit
+            pdf_target_dir = STATIC_PDF_DIR / category / product_name
+            pdf_target_dir.mkdir(parents=True, exist_ok=True)
 
-        for pdf_file in pdf_files:
-            target_pdf = pdf_target_dir / pdf_file.name
-            shutil.copy2(pdf_file, target_pdf)
+            image_target_dir = STATIC_IMAGES_DIR / category / product_name
+            image_target_dir.mkdir(parents=True, exist_ok=True)
 
-            # Utiliser le nom du fichier (sans extension) comme titre (conserver les tirets)
-            pdf_title = pdf_file.stem
-
-            documents_data.append(
-                {
-                    "title": pdf_title,
-                    "file": f"pdf/produits/{product_name}/{pdf_file.name}",
-                }
+            # Copier les images
+            images_data = []
+            image_files = (
+                list(product_dir.glob("*.jpg"))
+                + list(product_dir.glob("*.jpeg"))
+                + list(product_dir.glob("*.png"))
+                + list(product_dir.glob("*.webp"))
             )
-            print(f"  📄 Copié: {pdf_file.name}")
+            image_files = [f for f in image_files if f.name != "desktop.ini"]
 
-        # Générer le fichier markdown
-        md_content = generate_markdown(
-            metadata, product_name, images_data, documents_data
-        )
-        md_file = product_dir / "index.md"
+            for img_file in image_files:
+                target_img = image_target_dir / img_file.name
+                shutil.copy2(img_file, target_img)
+                images_data.append(
+                    f"images/produits/{category}/{product_name}/{img_file.name}"
+                )
+                print(f"  🖼️ Copié: {category}/{product_name}/{img_file.name}")
 
-        with open(md_file, "w", encoding="utf-8") as f:
-            f.write(md_content)
+            # Copier les PDFs et créer la liste des documents
+            documents_data = []
+            pdf_files = list(product_dir.glob("*.pdf"))
+            pdf_files = [f for f in pdf_files if f.name != "desktop.ini"]
 
-        print(f"  ✓ Généré: {md_file}")
+            for pdf_file in pdf_files:
+                target_pdf = pdf_target_dir / pdf_file.name
+                shutil.copy2(pdf_file, target_pdf)
+
+                # Utiliser le nom du fichier (sans extension) comme titre
+                pdf_title = pdf_file.stem
+
+                documents_data.append(
+                    {
+                        "title": pdf_title,
+                        "file": f"pdf/produits/{category}/{product_name}/{pdf_file.name}",
+                    }
+                )
+                print(f"  📄 Copié: {category}/{product_name}/{pdf_file.name}")
+
+            # Générer le fichier markdown
+            md_content = generate_markdown(
+                metadata, product_name, category, images_data, documents_data
+            )
+            md_file = product_dir / "index.md"
+
+            with open(md_file, "w", encoding="utf-8") as f:
+                f.write(md_content)
+
+            print(f"  ✓ Généré: {category}/{product_name}/index.md")
 
 
-def generate_markdown(metadata, product_name, images_data, documents_data):
+def generate_markdown(metadata, product_name, category, images_data, documents_data):
     """Génère le contenu markdown"""
 
     if images_data is None:

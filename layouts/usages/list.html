@@ -11,63 +11,27 @@
     {{ end }}
   </header>
 
-  <!-- Liste des équipements usagés -->
-  {{ if .Pages }}
-  <section class="products-grid-section">
-    <div class="products-grid">
-      {{ range .Pages }}
-      <article class="product-card used-equipment">
-        {{ if .Params.images }}
-        <div class="product-image">
-          <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><span>❄️</span></div\'">
-          {{ if .Params.condition }}
-          <span class="condition-badge {{ .Params.condition | lower }}">{{ .Params.condition }}</span>
-          {{ end }}
-        </div>
-        {{ else }}
-        <div class="product-image">
-          <div class="product-placeholder"><span>❄️</span></div>
-          {{ if .Params.condition }}
-          <span class="condition-badge {{ .Params.condition | lower }}">{{ .Params.condition }}</span>
-          {{ end }}
-        </div>
-        {{ end }}
-        
-        <div class="product-info">
-          <h3 class="product-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-          
+  <!-- Liste des catégories -->
+  {{ if .Sections }}
+  <section class="categories-grid-section">
+    <div class="categories-grid">
+      {{ range .Sections }}
+      <article class="category-card">
+        <a href="{{ .RelPermalink }}" class="category-link">
+          <div class="category-icon">📦</div>
+          <h3 class="category-title">{{ .Title }}</h3>
           {{ if .Params.description }}
-          <p class="product-description-short">{{ .Params.description }}</p>
+          <p class="category-description">{{ .Params.description }}</p>
           {{ end }}
-          
-          {{ if or .Params.year .Params.hours }}
-          <div class="equipment-meta">
-            {{ if .Params.year }}
-            <span class="meta-item">📅 {{ .Params.year }}</span>
-            {{ end }}
-            {{ if .Params.hours }}
-            <span class="meta-item">⏱️ {{ .Params.hours }}h</span>
-            {{ end }}
-          </div>
-          {{ end }}
-          
-          {{ if .Params.price }}
-          <div class="product-price">{{ .Params.price }}</div>
-          {{ end }}
-          
-          <a href="{{ .RelPermalink }}" class="btn btn-secondary">
-            Voir les détails
-          </a>
-        </div>
+          <span class="category-count">{{ len .Pages }} produit(s)</span>
+        </a>
       </article>
       {{ end }}
     </div>
   </section>
   {{ else }}
   <div class="empty-state">
-    <p>Aucun équipement usagé disponible pour le moment.</p>
-    <p>Contactez-nous pour connaître les prochaines arrivées.</p>
-    <a href="{{ "/contact/" | relURL }}" class="btn btn-primary">Nous contacter</a>
+    <p>Aucune catégorie disponible pour le moment.</p>
   </div>
   {{ end }}
 </div>

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Génère automatiquement les fichiers _index.md pour les équipements usagés
-à partir des fichiers trouvés dans les dossiers.
+à partir des fichiers trouvés dans les dossiers avec structure par catégorie.
+Structure: content/usages/<categorie>/<equipement>/
 """
 
 import os
@@ -36,72 +37,62 @@ def find_files(folder_path):
     return pdfs, images, info
 
 
-def generate_index_for_folder(folder_path, relative_path, has_subfolders=False):
-    """Génère un fichier _index.md pour un dossier"""
+def generate_usage_index(folder_path, category, usage_name):
+    """Génère un fichier index.md pour un équipement usagé"""
     pdfs, images, info = find_files(folder_path)
 
-    folder_name = os.path.basename(folder_path)
+    if not info and not pdfs and not images:
+        return False
 
-    # Pour un dossier de catégorie (sans fichiers mais avec sous-dossiers)
-    if not pdfs and not images and not info and has_subfolders:
-        frontmatter = {
-            "title": folder_name,
-            "description": f"Équipements usagés {folder_name}",
-            "draft": False,
-        }
+    frontmatter = {
+        "title": info.get("title", usage_name),
+        "description": info.get("description", f"Équipement usagé {usage_name}"),
+        "draft": False,
+    }
 
-        content = f"""---
-{yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
+    # Ajouter les specs si présentes dans info.yaml
+    if "specs" in info:
+        frontmatter["specs"] = info["specs"]
 
-# {folder_name}
+    # Ajouter le prix
+    if "price" in info:
+        frontmatter["price"] = info["price"]
 
-Découvrez nos équipements usagés {folder_name}.
-"""
+    # Ajouter l'état/condition
+    if "condition" in info:
+        frontmatter["condition"] = info["condition"]
 
-        index_path = os.path.join(folder_path, "_index.md")
-        with open(index_path, "w", encoding="utf-8") as f:
-            f.write(content)
+    # Ajouter l'année
+    if "year" in info:
+        frontmatter["year"] = info["year"]
 
-        print(f"✓ Catégorie: {relative_path}/_index.md")
-        return True
+    # Ajouter les heures
+    if "hours" in info:
+        frontmatter["hours"] = info["hours"]
 
-    # Pour un dossier avec des fichiers (équipement usagé)
-    if pdfs or images or info:
-        frontmatter = {
-            "title": info.get("title", folder_name),
-            "description": info.get("description", f"Équipement usagé {folder_name}"),
-            "draft": False,
-        }
+    # Ajouter les catégories
+    if "categories" in info:
+        frontmatter["categories"] = info["categories"]
 
-        # Ajouter les specs si présentes dans info.yaml
-        if "specs" in info:
-            frontmatter["specs"] = info["specs"]
+    # Ajouter les images avec le bon chemin
+    if images:
+        frontmatter["images"] = [
+            f"images/usages/{category}/{usage_name}/{img}" for img in images
+        ]
 
-        # Ajouter le prix
-        if "price" in info:
-            frontmatter["price"] = info["price"]
+    # Ajouter les PDFs avec le bon chemin
+    if pdfs:
+        frontmatter["documents"] = [
+            {
+                "title": pdf["title"],
+                "file": f"pdf/usages/{category}/{usage_name}/{pdf['file']}",
+            }
+            for pdf in pdfs
+        ]
 
-        # Ajouter l'état/condition
-        if "condition" in info:
-            frontmatter["condition"] = info["condition"]
+    index_path = os.path.join(folder_path, "index.md")
 
-        # Ajouter l'année
-        if "year" in info:
-            frontmatter["year"] = info["year"]
-
-        # Ajouter les heures d'utilisation
-        if "hours" in info:
-            frontmatter["hours"] = info["hours"]
-
-        if pdfs:
-            frontmatter["documents"] = pdfs
-
-        if images:
-            frontmatter["images"] = images
-
-        index_path = os.path.join(folder_path, "_index.md")
-
-        content = f"""---
+    content = f"""---
 {yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
 
 # {frontmatter["title"]}
@@ -117,50 +108,76 @@ Retrouvez toutes les informations techniques et commerciales ci-dessous.
 Pour toute question ou pour planifier une visite, n'hésitez pas à [nous contacter](/contact/).
 """
 
-        with open(index_path, "w", encoding="utf-8") as f:
-            f.write(content)
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write(content)
 
-        print(
-            f"✓ Équipement: {relative_path}/_index.md ({len(pdfs)} PDFs, {len(images)} images)"
-        )
-        return True
+    print(
+        f"✓ Équipement: {category}/{usage_name}/index.md ({len(pdfs)} PDFs, {len(images)} images)"
+    )
+    return True
 
-    return False
+
+def generate_category_index(folder_path, category_name):
+    """Génère un fichier _index.md pour une catégorie"""
+    frontmatter = {
+        "title": category_name,
+        "description": f"Équipements usagés {category_name}",
+        "draft": False,
+    }
+
+    content = f"""---
+{yaml.dump(frontmatter, allow_unicode=True, sort_keys=False)}---
+
+# {category_name}
+
+Découvrez nos équipements usagés {category_name}.
+"""
+
+    index_path = os.path.join(folder_path, "_index.md")
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    print(f"✓ Catégorie: {category_name}/_index.md")
+    return True
 
 
 def scan_usages_folder():
-    """Scanne tous les dossiers dans content/usages et génère les _index.md"""
+    """Scanne tous les dossiers dans content/usages avec structure par catégorie"""
     base_path = "content/usages"
 
     if not os.path.exists(base_path):
         print(f"❌ Dossier {base_path} non trouvé")
         return
 
-    count = 0
+    count_categories = 0
+    count_usages = 0
 
-    # D'abord, traiter tous les dossiers récursivement (du plus profond au plus superficiel)
-    all_dirs = []
-    for root, dirs, files in os.walk(base_path):
-        all_dirs.append((root, dirs, files))
+    # Parcourir les catégories
+    for category in os.listdir(base_path):
+        category_path = os.path.join(base_path, category)
 
-    # Inverser pour traiter les dossiers enfants d'abord
-    all_dirs.reverse()
+        # Ignorer les fichiers et les dossiers spéciaux
+        if not os.path.isdir(category_path) or category.startswith("_"):
+            continue
 
-    for root, dirs, files in all_dirs:
-        relative = root.replace(base_path, "").strip(os.sep)
+        # Générer l'index de la catégorie
+        if generate_category_index(category_path, category):
+            count_categories += 1
 
-        # Vérifier si ce dossier a des sous-dossiers
-        has_subfolders = len(dirs) > 0
+        # Parcourir les équipements dans la catégorie
+        for usage in os.listdir(category_path):
+            usage_path = os.path.join(category_path, usage)
 
-        # Vérifier si ce dossier a des fichiers
-        has_files = len(files) > 0
+            if not os.path.isdir(usage_path) or usage.startswith("_"):
+                continue
 
-        # Générer _index.md si nécessaire
-        if has_files or has_subfolders:
-            if generate_index_for_folder(root, relative, has_subfolders):
-                count += 1
+            # Générer l'index de l'équipement
+            if generate_usage_index(usage_path, category, usage):
+                count_usages += 1
 
-    print(f"\n✅ {count} fichiers _index.md générés pour les équipements usagés")
+    print(
+        f"\n✅ {count_categories} catégories et {count_usages} équipements usagés générés"
+    )
 
 
 if __name__ == "__main__":

@@ -1,16 +1,54 @@
 # Structure des dossiers pour produits et équipements usagés
 
-## Comment ajouter un produit ou un équipement usagé
+## Organisation par catégories
 
-### Pour les Produits
+Les produits et équipements usagés sont organisés par catégories :
 
-Créer un dossier dans `content/produits/<nom-du-produit>/` avec :
+```
+content/produits/
+├── Souffleurs/
+│   ├── blizzard-b48c/
+│   │   ├── info.yaml
+│   │   ├── hero.jpg (optionnel)
+│   │   └── manuel.pdf (optionnel)
+│   └── blizzard-b54c/
+│       ├── info.yaml
+│       └── ...
+├── Balais/
+│   └── balais-pro-72/
+│       ├── info.yaml
+│       └── ...
+└── Lame/
+    └── lame-pro-96/
+        ├── info.yaml
+        └── ...
 
-1. **info.yaml** - Métadonnées du produit (voir exemple ci-dessous)
-2. **Images** - Fichiers .jpg, .jpeg, .png, .webp (optionnel)
-3. **PDFs** - Fiches techniques, manuels (optionnel)
+content/usages/
+├── Souffleuses/
+│   ├── souffleuse-industrielle-2019/
+│   │   ├── info.yaml
+│   │   └── ...
+│   └── blizzard-b54c-2022/
+│       ├── info.yaml
+│       └── ...
+└── Balais/
+    ├── balais-municipal-2020/
+    │   ├── info.yaml
+    │   └── ...
+    └── balais-pro-72-2021/
+        ├── info.yaml
+        └── ...
+```
 
-#### Exemple info.yaml pour un produit :
+## Comment ajouter un produit
+
+1. **Créer la catégorie** (si elle n'existe pas) : `content/produits/NomCategorie/`
+2. **Créer le dossier du produit** : `content/produits/NomCategorie/nom-du-produit/`
+3. **Ajouter le fichier info.yaml** avec les métadonnées
+4. **Ajouter les images** (.jpg, .png, .webp) - optionnel
+5. **Ajouter les PDFs** (.pdf) - optionnel
+
+### Exemple info.yaml pour un produit :
 
 ```yaml
 title: "Blizzard B72c"
@@ -30,15 +68,15 @@ specs:
   Garantie: "3 ans / 2000 heures"
 ```
 
-### Pour les Équipements Usagés
+## Comment ajouter un équipement usagé
 
-Créer un dossier dans `content/usages/<nom-equipement>/` avec :
+1. **Créer la catégorie** (si elle n'existe pas) : `content/usages/NomCategorie/`
+2. **Créer le dossier de l'équipement** : `content/usages/NomCategorie/nom-equipement/`
+3. **Ajouter le fichier info.yaml** avec les métadonnées
+4. **Ajouter les images** (.jpg, .png, .webp) - optionnel
+5. **Ajouter les PDFs** (.pdf) - optionnel
 
-1. **info.yaml** - Métadonnées de l'équipement (voir exemple ci-dessous)
-2. **Images** - Fichiers .jpg, .jpeg, .png, .webp (optionnel)
-3. **PDFs** - Fiches techniques, factures d'entretien (optionnel)
-
-#### Exemple info.yaml pour un équipement usagé :
+### Exemple info.yaml pour un équipement usagé :
 
 ```yaml
 title: "Souffleuse Industrielle Pro 2019"
@@ -64,17 +102,10 @@ specs:
 
 Lors du déploiement (GitHub Actions), les scripts Python :
 
-1. **Copient les images** vers `static/images/produits/` ou `static/images/usages/`
-2. **Copient les PDFs** vers `static/pdf/produits/` ou `static/pdf/usages/`
-3. **Génèrent le fichier** `index.md` avec tout le contenu frontmatter
+1. **Copient les images** vers `static/images/produits/categorie/produit/` ou `static/images/usages/categorie/equipement/`
+2. **Copient les PDFs** vers `static/pdf/produits/categorie/produit/` ou `static/pdf/usages/categorie/equipement/`
+3. **Génèrent le fichier** `index.md` avec tout le frontmatter (images et PDFs détectés automatiquement)
 4. **Mettent à jour les index** des catégories
-
-## Exemples créés
-
-- `content/produits/blizzard-b72c/` - Souffleuse professionnelle neuve
-- `content/produits/blizzard-b64c/` - Souffleuse professionnelle neuve
-- `content/usages/souffleuse-industrielle-2019/` - Équipement usagé
-- `content/usages/balais-municipal-2020/` - Équipement usagé
 
 ## Champs disponibles
 
@@ -99,8 +130,9 @@ Lors du déploiement (GitHub Actions), les scripts Python :
 - `year` - Année de fabrication
 - `hours` - Heures d'utilisation
 
-## Notes importantes
+## Important
 
-- **Ne pas modifier** les fichiers `.md` générés manuellement - ils seront écrasés
+- **Ne pas modifier** les fichiers `index.md` générés - ils seront écrasés
 - **Modifier uniquement** le fichier `info.yaml` et ajouter les images/PDFs
-- Les anciens fichiers `.md` existants dans `content/produits/` et `content/usages/` restent fonctionnels
+- Les images et PDFs sont **détectés automatiquement** - pas besoin de les lister dans le YAML
+- Le script scanne tous les fichiers `.jpg`, `.png`, `.webp` et `.pdf` dans le dossier
