@@ -1,14 +1,12 @@
 {{ define "main" }}
-{{ $images := slice }}
-{{ $pdfs := slice }}
-{{ $resources := .Resources.ByType "image" }}
-{{ range $resources }}
-  {{ $images = $images | append .Permalink }}
-{{ end }}
-{{ $pdfResources := .Resources.ByType "application/pdf" }}
-{{ range $pdfResources }}
-  {{ $pdfs = $pdfs | append (dict "name" .Name "url" .Permalink) }}
-{{ end }}
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "images" (.Params.images | default slice)
+  "documents" (.Params.documents | default slice)
+) }}
+{{ $images := $data.images }}
+{{ $documents := $data.documents }}
 <div class="container page-container">
   <article class="product-page">
     <div class="product-layout">
@@ -21,7 +19,7 @@
             <div class="carousel-track" id="carouselTrack">
               {{ range $images }}
               <div class="carousel-slide">
-                <img src="{{ . }}" alt="{{ $.Title }}">
+                <img src="{{ . | absURL }}" alt="{{ $data.title }}">
               </div>
               {{ end }}
             </div>
@@ -35,63 +33,18 @@
           </div>
           {{ else }}
           <figure class="product-main-image">
-            <img src="{{ index $images 0 }}" alt="{{ .Title }}" id="main-product-image">
+            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image">
           </figure>
           {{ end }}
-        {{ else if .Params.images }}
-          {{ $imageCount := len .Params.images }}
-          {{ if gt $imageCount 1 }}
-          <div class="carousel-container">
-            <div class="carousel-track" id="carouselTrack">
-              {{ range .Params.images }}
-              <div class="carousel-slide">
-                <img src="{{ . | absURL }}" alt="{{ $.Title }}">
-              </div>
-              {{ end }}
-            </div>
-            <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
-            <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
-            <div class="carousel-dots">
-              {{ range $i, $_ := .Params.images }}
-              <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
-              {{ end }}
-            </div>
-          </div>
-          {{ else }}
-          <figure class="product-main-image">
-            <img src="{{ (index .Params.images 0) | absURL }}" alt="{{ .Title }}" id="main-product-image">
-          </figure>
-          {{ end }}
-        {{ else if .Params.image }}
-        <figure class="product-main-image">
-          <img src="{{ .Params.image | relURL }}" alt="{{ .Title }}" id="main-product-image">
-        </figure>
         {{ end }}
       </div>
       
       <!-- Colonne informations -->
       <div class="product-details">
         <header class="product-header">
-          <h1 class="product-title">{{ .Title }}</h1>
-          {{ if .Params.subtitle }}
-          <p class="product-subtitle">{{ .Params.subtitle }}</p>
-          {{ end }}
-          
-          {{ if .Params.categories }}
-          <div class="product-categories">
-            {{ range .Params.categories }}
-            <span class="category-tag">{{ . }}</span>
-            {{ end }}
-          </div>
-          {{ end }}
-          
-          {{ if .Params.price }}
-          <div class="product-price-block">
-            <span class="price">{{ .Params.price }} $</span>
-            {{ if .Params.price_note }}
-            <span class="price-note">{{ .Params.price_note }}</span>
-            {{ end }}
-          </div>
+          <h1 class="product-title">{{ $data.title }}</h1>
+          {{ if $data.description }}
+          <p class="product-subtitle">{{ $data.description }}</p>
           {{ end }}
         </header>
         
@@ -99,47 +52,12 @@
           {{ .Content }}
         </div>
         
-        <!-- Spécifications -->
-        {{ if .Params.specs }}
-        <section class="product-specs">
-          <h2>Spécifications techniques</h2>
-          <table class="specs-table">
-            <tbody>
-              {{ range $key, $value := .Params.specs }}
-              <tr>
-                <th>{{ $key }}</th>
-                <td>{{ $value }}</td>
-              </tr>
-              {{ end }}
-            </tbody>
-          </table>
-        </section>
-        {{ end }}
-        
         <!-- Documents / Manuels -->
-        {{ if $pdfs }}
+        {{ if $documents }}
         <section class="product-documents">
           <h2>📖 Documentation</h2>
           <div class="documents-list">
-            {{ range $pdfs }}
-            <div class="document-item">
-              <div class="document-info">
-                <h3>{{ .name | replaceRE "\\.pdf$" "" }}</h3>
-              </div>
-              <div class="document-actions">
-                <a href="{{ .url }}" class="btn btn-secondary" target="_blank" rel="noopener">
-                  Télécharger PDF
-                </a>
-              </div>
-            </div>
-            {{ end }}
-          </div>
-        </section>
-        {{ else if .Params.documents }}
-        <section class="product-documents">
-          <h2>📖 Documentation</h2>
-          <div class="documents-list">
-            {{ range .Params.documents }}
+            {{ range $documents }}
             <div class="document-item">
               <div class="document-info">
                 <h3>{{ .title }}</h3>
@@ -153,38 +71,18 @@
             {{ end }}
           </div>
         </section>
-        {{ else if .Params.manual_ref }}
-        <section class="product-manual">
-          <h2>📖 Documentation</h2>
-          <a href="{{ .Params.manual_ref | relURL }}" class="btn btn-secondary">
-            Voir le manuel de pièces
-          </a>
-        </section>
         {{ end }}
         
         <!-- Contact -->
         <div class="product-cta">
           <h2>Intéressé par ce produit?</h2>
           <p>Contactez-nous pour connaître la disponibilité et les options de livraison.</p>
-          <a href="{{ "/contact/" | relURL }}?produit={{ .Title | urlize }}" class="btn btn-primary">
+          <a href="{{ "/contact/" | relURL }}?produit={{ $data.title | urlize }}" class="btn btn-primary">
             Demander plus d'informations
           </a>
         </div>
       </div>
     </div>
-    
-    <!-- Produits similaires -->
-    {{ $related := .Site.RegularPages.Related . | first 3 }}
-    {{ if $related }}
-    <section class="related-products">
-      <h2>Produits similaires</h2>
-      <div class="products-grid">
-        {{ range $related }}
-        {{ partial "product-card.html" . }}
-        {{ end }}
-      </div>
-    </section>
-    {{ end }}
   </article>
 </div>
 {{ end }}
