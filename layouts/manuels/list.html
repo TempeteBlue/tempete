@@ -164,6 +164,26 @@
   </div>
   {{ end }}
 
+  <!-- Navigation vers les sous-dossiers -->
+  {{ if .Sections }}
+  <section class="manual-categories">
+    <h2>📁 Dossiers</h2>
+    <div class="category-grid">
+      {{ range .Sections }}
+      {{ $itemCount := len .Pages }}
+      {{ if and (eq $itemCount 0) .Params.manuals }}
+        {{ $itemCount = len .Params.manuals }}
+      {{ end }}
+      <a href="{{ .RelPermalink }}" class="category-card">
+        <span class="category-icon">📂</span>
+        <h3>{{ .Title }}</h3>
+        <p>{{ $itemCount }} élément(s)</p>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
   <!-- Contenu additionnel -->
   {{ if .Content }}
   <div class="page-content">
