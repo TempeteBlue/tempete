@@ -8,6 +8,7 @@ title = 'Concessionnaire Souffleuses & Pièces'
 [permalinks]
   manuels = '/manuels/:slug/'
   produits = '/produits/:slug/'
+  usage = '/usage/:slug/'
 
 # Taxonomies pour organiser les manuels
 [taxonomies]
@@ -52,7 +53,13 @@ title = 'Concessionnaire Souffleuses & Pièces'
     name = "Manuels de pièces"
     url = "/manuels/"
     weight = 30
-    
+
+  [[menu.main]]
+    identifier = "usage"
+    name = "Usagé"
+    url = "/usage/"
+    weight = 35
+
   [[menu.main]]
     identifier = "contact"
     name = "Me contacter"
