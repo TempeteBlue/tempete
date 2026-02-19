@@ -93,6 +93,11 @@ jobs:
           echo "📄 Génération des index pour les dossiers de manuels..."
           python3 scripts/generate-manual-indexes.py || echo "Pas de dossiers à indexer"
 
+      - name: Generate product indexes from folders
+        run: |
+          echo "📦 Génération des index pour les dossiers de produits..."
+          python3 scripts/generate-product-indexes.py || echo "Pas de dossiers à indexer"
+
       - name: Build Hugo site
         run: hugo --gc --minify --baseURL "https://tempeteblue.github.io/tempete/"
         env:

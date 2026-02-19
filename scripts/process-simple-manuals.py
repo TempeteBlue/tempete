@@ -52,7 +52,7 @@ def process_manual_folders():
             pdf_target_dir = STATIC_PDF_DIR / category / model_name
             pdf_target_dir.mkdir(parents=True, exist_ok=True)
 
-            # Copier les images
+            # Copier les images (jpg, png, webp)
             images_data = []
             image_target_dir = STATIC_IMAGES_DIR / category / model_name
             image_target_dir.mkdir(parents=True, exist_ok=True)
@@ -63,6 +63,17 @@ def process_manual_folders():
                 + list(model_dir.glob("*.webp"))
             )
             image_files = [f for f in image_files if f.name != "desktop.ini"]
+
+            # Also check for PNG files generated from PDFs (same name as PDF)
+            pdf_names = [pdf.stem for pdf in pdf_files]
+            png_from_pdf = [
+                model_dir / f"{pdf_name}.png"
+                for pdf_name in pdf_names
+                if (model_dir / f"{pdf_name}.png").exists()
+            ]
+            image_files.extend(png_from_pdf)
+            # Remove duplicates
+            image_files = list(set(image_files))
 
             for img_file in image_files:
                 target_img = image_target_dir / img_file.name
