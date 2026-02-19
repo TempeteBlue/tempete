@@ -37,32 +37,26 @@ title = 'Concessionnaire Souffleuses & Pièces'
 # Menu principal
 [menu]
   [[menu.main]]
-    identifier = "accueil"
-    name = "Accueil"
-    url = "/"
-    weight = 10
-    
-  [[menu.main]]
     identifier = "produits"
     name = "Produits"
     url = "/produits/"
-    weight = 20
+    weight = 10
     
-  [[menu.main]]
-    identifier = "manuels"
-    name = "Manuels de pièces"
-    url = "/manuels/"
-    weight = 30
-
   [[menu.main]]
     identifier = "usage"
     name = "Usagé"
     url = "/usage/"
-    weight = 35
+    weight = 20
+
+  [[menu.main]]
+    identifier = "manuels"
+    name = "Manuels"
+    url = "/manuels/"
+    weight = 30
 
   [[menu.main]]
     identifier = "contact"
-    name = "Me contacter"
+    name = "Contact"
     url = "/contact/"
     weight = 40
 
