@@ -4,11 +4,11 @@ title = 'Concessionnaire Souffleuses & Pièces'
 
 # No theme - using custom layouts
 
-# Permalinks canoniques
+# Permalinks canoniques avec catégories
 [permalinks]
-  manuels = '/manuels/:slug/'
-  produits = '/produits/:slug/'
-  usage = '/usage/:slug/'
+  manuels = '/manuels/:sections/:slug/'
+  produits = '/produits/:sections/:slug/'
+  usage = '/usage/:sections/:slug/'
 
 # Taxonomies pour organiser les manuels
 [taxonomies]
