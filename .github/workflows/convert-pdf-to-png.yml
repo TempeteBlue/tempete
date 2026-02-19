@@ -6,6 +6,9 @@ on:
     paths:
       - 'content/manuels/**/*.pdf'
       - 'static/pdf/**/*.pdf'
+    paths-ignore:
+      - 'content/manuels/**/*.png'
+      - 'static/images/**/*.png'
   workflow_dispatch:
 
 permissions:
@@ -55,3 +58,5 @@ jobs:
         with:
           commit_message: "feat: Add manuel page pictures from PDF first pages"
           file_pattern: "content/manuels/**/*.png"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
