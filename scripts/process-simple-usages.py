@@ -21,7 +21,7 @@ import yaml
 from pathlib import Path
 import shutil
 
-CONTENT_DIR = Path("content/usages")
+CONTENT_DIR = Path("content/usage")
 STATIC_PDF_DIR = Path("static/pdf/usages")
 STATIC_IMAGES_DIR = Path("static/images/usages")
 

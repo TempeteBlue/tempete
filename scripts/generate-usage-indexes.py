@@ -142,8 +142,8 @@ Découvrez nos équipements usagés {category_name}.
 
 
 def scan_usages_folder():
-    """Scanne tous les dossiers dans content/usages avec structure par catégorie"""
-    base_path = "content/usages"
+    """Scanne tous les dossiers dans content/usage avec structure par catégorie"""
+    base_path = "content/usage"
 
     if not os.path.exists(base_path):
         print(f"❌ Dossier {base_path} non trouvé")
