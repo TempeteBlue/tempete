@@ -2,48 +2,61 @@
 {{ $data := merge .Params (dict 
   "title" (.Params.title | default .Title)
   "description" (.Params.description | default "")
-  "years" (.Params.years | default "")
-  "specs" (.Params.specs | default dict)
-  "manuals" (.Params.manuals | default slice)
-  "images" (.Params.images | default slice)
 ) }}
-{{ $images := $data.images }}
-{{ $pdfs := $data.manuals }}
 <div class="container page-container">
   <header class="page-header">
     <h1 class="page-title">{{ $data.title }}</h1>
     {{ if $data.description }}
     <p class="page-description">{{ $data.description }}</p>
     {{ end }}
-    {{ if $data.years }}
-    <p class="page-description">Années: {{ $data.years }}</p>
-    {{ end }}
   </header>
 
-  <!-- Navigation vers les sous-dossiers -->
-  {{ if .Sections }}
-  <section class="manual-categories">
-    <h2>📁 Dossiers</h2>
-    <div class="category-grid">
-      {{ range .Sections }}
-      {{ $itemCount := len .Pages }}
-      {{ if and (eq $itemCount 0) .Params.manuals }}
-        {{ $itemCount = len .Params.manuals }}
-      {{ end }}
-      <a href="{{ .RelPermalink }}" class="category-card">
-        <span class="category-icon">📂</span>
-        <h3>{{ .Title }}</h3>
-        <p>{{ $itemCount }} élément(s)</p>
-      </a>
+  <!-- Liste des produits -->
+  {{ if .Pages }}
+  <section class="products-grid-section">
+    <div class="products-grid">
+      {{ range .Pages }}
+      <article class="product-card">
+        {{ if .Params.images }}
+        <div class="product-image">
+          <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><span>❄️</span></div\'">
+        </div>
+        {{ else }}
+        <div class="product-image">
+          <div class="product-placeholder"><span>❄️</span></div>
+        </div>
+        {{ end }}
+        
+        <div class="product-info">
+          <h3 class="product-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          
+          {{ if .Params.description }}
+          <p class="product-description-short">{{ .Params.description }}</p>
+          {{ end }}
+          
+          {{ if .Params.categories }}
+          <div class="product-categories-tags">
+            {{ range first 2 .Params.categories }}
+            <span class="category-tag">{{ . }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+          
+          {{ if .Params.price }}
+          <div class="product-price">{{ .Params.price }}</div>
+          {{ end }}
+          
+          <a href="{{ .RelPermalink }}" class="btn btn-secondary">
+            Voir les détails
+          </a>
+        </div>
+      </article>
       {{ end }}
     </div>
   </section>
-  {{ end }}
-
-  <!-- Contenu additionnel -->
-  {{ if .Content }}
-  <div class="page-content">
-    {{ .Content }}
+  {{ else }}
+  <div class="empty-state">
+    <p>Aucun produit disponible pour le moment.</p>
   </div>
   {{ end }}
 </div>
