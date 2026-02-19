@@ -147,7 +147,7 @@ jobs:
           python3 scripts/generate-product-indexes.py || echo "Pas de dossiers à indexer"
 
       - name: Build Hugo site
-        run: hugo --gc --minify --baseURL "https://tempeteblue.github.io/tempete/"
+        run: hugo --gc --minify --baseURL "https://www.souffleur.ca/"
         env:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
