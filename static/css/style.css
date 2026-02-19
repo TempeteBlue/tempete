@@ -292,6 +292,7 @@ a:hover {
 
 .carousel-btn {
   position: absolute;
+  z-index: 10;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(0,0,0,0.6);
@@ -1050,15 +1051,25 @@ a:hover {
   justify-content: space-between;
   padding: var(--spacing-lg);
   background: var(--color-bg-alt);
-  border-left: 4px solid var(--color-primary);
+  border-left: 4px solid var(--color-secondary);
   gap: var(--spacing-lg);
 }
 
 .manual-info h3 {
   font-size: var(--font-size-base);
   margin-bottom: var(--spacing-xs);
-  color: var(--color-primary);
+  color: #000000;
   font-weight: 700;
+}
+
+.manuals-list .btn-primary {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.manuals-list .btn-primary:hover {
+  background: #c8053a;
+  border-color: #c8053a;
 }
 
 .manual-info p {
