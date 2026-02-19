@@ -1601,12 +1601,10 @@ a:hover {
 /* Ensure carousel buttons are clickable */
 .carousel-btn {
   z-index: 10;
-  position: relative;
 }
 
 .carousel-dots {
   z-index: 10;
-  position: relative;
 }
 
 .manual-content-column {
