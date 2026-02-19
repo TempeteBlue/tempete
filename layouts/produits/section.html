@@ -3,6 +3,7 @@
   "title" (.Params.title | default .Title)
   "description" (.Params.description | default "")
 ) }}
+{{ $is_root := eq .RelPermalink "/produits/" }}
 <div class="container page-container">
   <header class="page-header">
     <h1 class="page-title">{{ $data.title }}</h1>
@@ -11,7 +12,32 @@
     {{ end }}
   </header>
 
-  <!-- Liste des produits dans cette catégorie -->
+  {{ if $is_root }}
+  {{/* Page racine /produits/ - Afficher les catégories */}}
+  {{ if .Sections }}
+  <section class="categories-grid-section">
+    <div class="categories-grid">
+      {{ range .Sections }}
+      <article class="category-card">
+        <a href="{{ .RelPermalink }}" class="category-link">
+          <div class="category-icon">📦</div>
+          <h3 class="category-title">{{ .Title }}</h3>
+          {{ if .Params.description }}
+          <p class="category-description">{{ .Params.description }}</p>
+          {{ end }}
+          <span class="category-count">{{ len .Pages }} produit(s)</span>
+        </a>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+  {{ else }}
+  <div class="empty-state">
+    <p>Aucune catégorie disponible pour le moment.</p>
+  </div>
+  {{ end }}
+  {{ else }}
+  {{/* Sous-catégorie - Afficher les produits */}}
   {{ if .Pages }}
   <section class="products-grid-section">
     <div class="products-grid">
@@ -64,5 +90,6 @@
   <div class="back-link">
     <a href="{{ "/produits/" | relURL }}" class="btn btn-outline">← Retour aux catégories</a>
   </div>
+  {{ end }}
 </div>
 {{ end }}
