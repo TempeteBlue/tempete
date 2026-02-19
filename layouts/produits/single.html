@@ -4,6 +4,11 @@
   "description" (.Params.description | default "")
   "images" (.Params.images | default slice)
   "documents" (.Params.documents | default slice)
+  "price" (.Params.price | default "")
+  "price_note" (.Params.price_note | default "")
+  "sku" (.Params.sku | default "")
+  "in_stock" (.Params.in_stock | default true)
+  "specs" (.Params.specs | default dict)
 ) }}
 {{ $images := $data.images }}
 {{ $documents := $data.documents }}
@@ -36,6 +41,10 @@
             <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image">
           </figure>
           {{ end }}
+        {{ else }}
+          <div class="product-placeholder">
+            <span>❄️</span>
+          </div>
         {{ end }}
       </div>
       
@@ -46,7 +55,49 @@
           {{ if $data.description }}
           <p class="product-subtitle">{{ $data.description }}</p>
           {{ end }}
+          
+          <!-- Prix -->
+          {{ if $data.price }}
+          <div class="price-block">
+            <span class="price">{{ $data.price }}</span>
+            {{ if $data.price_note }}
+            <span class="price-note">{{ $data.price_note }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+          
+          <!-- SKU et Stock -->
+          <div class="product-meta">
+            {{ if $data.sku }}
+            <span class="meta-item"><strong>Référence:</strong> {{ $data.sku }}</span>
+            {{ end }}
+            <span class="meta-item">
+              <strong>Disponibilité:</strong> 
+              {{ if $data.in_stock }}
+                <span class="stock in-stock">✓ En stock</span>
+              {{ else }}
+                <span class="stock out-of-stock">Sur commande</span>
+              {{ end }}
+            </span>
+          </div>
         </header>
+        
+        <!-- Spécifications -->
+        {{ if $data.specs }}
+        <section class="product-specs-section">
+          <h2>Caractéristiques techniques</h2>
+          <table class="specs-table">
+            <tbody>
+              {{ range $key, $value := $data.specs }}
+              <tr>
+                <th>{{ $key }}</th>
+                <td>{{ $value }}</td>
+              </tr>
+              {{ end }}
+            </tbody>
+          </table>
+        </section>
+        {{ end }}
         
         <div class="product-description">
           {{ .Content }}
