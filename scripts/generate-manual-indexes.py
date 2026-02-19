@@ -21,11 +21,19 @@ def find_pdfs_and_images(folder_path):
         item_path = os.path.join(folder_path, item)
         if os.path.isfile(item_path):
             if item.lower().endswith(".pdf"):
+                title = item.replace(".pdf", "").replace(".PDF", "")
+                # Detect language from filename
+                lang = ""
+                if "-A " in title or "-A" in title:
+                    lang = "Anglais"
+                elif "-F " in title or "-F" in title:
+                    lang = "Français"
+
                 pdfs.append(
                     {
-                        "title": item.replace(".pdf", "").replace(".PDF", ""),
+                        "title": title,
                         "file": f"pdf/{folder_path.replace('content/', '').replace(os.sep, '/')}/{item}",
-                        "lang": "Français",
+                        "lang": lang,
                     }
                 )
             elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
