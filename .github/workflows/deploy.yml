@@ -25,9 +25,57 @@ defaults:
     shell: bash
 
 jobs:
+  # Job de conversion des PDF en PNG
+  convert-pdfs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+
+      - name: Convert first page of PDFs to PNG
+        run: |
+          # Process PDFs in content/manuels
+          find content/manuels -name "*.pdf" -type f | while read pdf_file; do
+            pdf_dir=$(dirname "$pdf_file")
+            pdf_name=$(basename "$pdf_file" .pdf)
+            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$pdf_dir/$pdf_name" 2>/dev/null; then
+              echo "Converted: $pdf_file -> $pdf_dir/$pdf_name.png"
+            else
+              echo "Skipped (error): $pdf_file"
+            fi
+          done
+          
+          # Process PDFs in static/pdf/manuels and copy PNGs to content/manuels
+          find static/pdf/manuels -name "*.pdf" -type f | while read pdf_file; do
+            pdf_name=$(basename "$pdf_file" .pdf)
+            output_dir="content/manuels/$(dirname "${pdf_file#static/pdf/manuels/}")"
+            mkdir -p "$output_dir"
+            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$output_dir/$pdf_name" 2>/dev/null; then
+              echo "Converted: $pdf_file -> $output_dir/$pdf_name.png"
+            else
+              echo "Skipped (error): $pdf_file"
+            fi
+          done
+
+      - name: Commit PNG files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "feat: Add manuel page pictures from PDF first pages"
+          file_pattern: "content/manuels/**/*.png"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   # Job de build
   build:
     runs-on: ubuntu-latest
+    needs: convert-pdfs
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
