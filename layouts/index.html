@@ -3,35 +3,35 @@
 
 <!-- Hero Section Amélioré -->
 <section class="hero" style="background-image: url('{{ "images/hero-bg.jpg" | relURL }}'); background-size: cover; background-position: center;">
-  <div class="hero-overlay" style="background: rgba(0, 0, 0, 0.85);"></div>
+  <div class="hero-overlay" style="background: rgba(255, 255, 255, 0.7);"></div>
   <div class="container">
-    <div class="hero-content">
-      <span class="hero-badge"><img src="{{ "images/icone.svg" | relURL }}" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);"> Spécialiste hivernal depuis 1985</span>
-      <h1 class="hero-title">{{ $homepage.hero.title }}</h1>
-      <p class="hero-subtitle">{{ $homepage.hero.subtitle }}</p>
+    <div class="hero-content" style="color: #1a1a2e;">
+      <span class="hero-badge" style="background: rgba(230, 57, 70, 0.9); color: #fff; border: none;"><img src="{{ "images/icone.svg" | relURL }}" alt="" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px; filter: brightness(0) saturate(100%) invert(100%);"> Spécialiste hivernal depuis 1985</span>
+      <h1 class="hero-title" style="background: none; -webkit-background-clip: initial; -webkit-text-fill-color: initial; color: #1a1a2e; text-shadow: 0 2px 4px rgba(255,255,255,0.8);">{{ $homepage.hero.title }}</h1>
+      <p class="hero-subtitle" style="color: #333;">{{ $homepage.hero.subtitle }}</p>
       <div class="hero-actions">
-        <a href="{{ "/produits/" | relURL }}" class="btn btn-primary btn-large">
+        <a href="{{ "/produits/" | relURL }}" class="btn btn-primary btn-large" style="background: #e63946; color: #fff; border: 2px solid #e63946;">
           <span>🛒 Voir nos produits</span>
         </a>
-        <a href="{{ "/usage/" | relURL }}" class="btn btn-secondary btn-large">
+        <a href="{{ "/usage/" | relURL }}" class="btn btn-secondary btn-large" style="background: #1a1a2e; color: #fff; border: 2px solid #1a1a2e;">
           <span>♻️ Équipements usagés</span>
         </a>
-        <a href="{{ "/manuels/" | relURL }}" class="btn btn-secondary btn-large">
+        <a href="{{ "/manuels/" | relURL }}" class="btn btn-secondary btn-large" style="background: #0f3460; color: #fff; border: 2px solid #0f3460;">
           <span>📖 Manuels</span>
         </a>
       </div>
       <div class="hero-stats">
         <div class="stat">
-          <span class="stat-number">40+</span>
-          <span class="stat-label">Années d'expérience</span>
+          <span class="stat-number" style="color: #1a1a2e;">40+</span>
+          <span class="stat-label" style="color: #333;">Années d'expérience</span>
         </div>
         <div class="stat">
-          <span class="stat-number">5000+</span>
-          <span class="stat-label">Clients satisfaits</span>
+          <span class="stat-number" style="color: #1a1a2e;">5000+</span>
+          <span class="stat-label" style="color: #333;">Clients satisfaits</span>
         </div>
         <div class="stat">
-          <span class="stat-number">24h</span>
-          <span class="stat-label">Livraison disponible</span>
+          <span class="stat-number" style="color: #1a1a2e;">24h</span>
+          <span class="stat-label" style="color: #333;">Livraison disponible</span>
         </div>
       </div>
     </div>
