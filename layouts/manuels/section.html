@@ -15,8 +15,9 @@
   {{ if $is_root }}
   {{/* Page racine /manuels/ - Afficher les catégories */}}
   {{ if .Sections }}
-  <section class="categories-grid-section">
-    <div class="categories-grid">
+  <section class="manual-categories">
+    <h2>Catégories de manuels</h2>
+    <div class="category-grid">
       {{ range .Sections }}
       <article class="category-card">
         <a href="{{ .RelPermalink }}" class="category-link">
@@ -40,8 +41,9 @@
   {{/* Sous-catégorie ou page de modèle */}}
   {{ if .Sections }}
   {{/* Niveau catégorie - Afficher les modèles */}}
-  <section class="categories-grid-section">
-    <div class="categories-grid">
+  <section class="manual-categories">
+    <h2>Modèles disponibles</h2>
+    <div class="category-grid">
       {{ range .Sections }}
       <article class="category-card">
         <a href="{{ .RelPermalink }}" class="category-link">
@@ -57,45 +59,51 @@
     </div>
   </section>
   {{ else if .Params.manuals }}
-  {{/* Page de modèle avec manuels PDF */}}
-  <section class="manual-detail">
+  {{/* Page de modèle avec manuels PDF - Utiliser le layout existant */}}
+  <div class="manual-layout">
     {{ if .Params.images }}
-    <div class="manual-images">
-      {{ range .Params.images }}
-      <div class="manual-image">
-        <img src="{{ . | absURL }}" alt="Aperçu du manuel" loading="lazy">
+    <div class="manual-image-column">
+      {{ if eq (len .Params.images) 1 }}
+      <div class="single-image">
+        <img src="{{ index .Params.images 0 | absURL }}" alt="Aperçu du manuel" loading="lazy">
+      </div>
+      {{ else }}
+      <div class="image-carousel">
+        {{ range .Params.images }}
+        <div class="carousel-slide">
+          <img src="{{ . | absURL }}" alt="Aperçu du manuel" loading="lazy">
+        </div>
+        {{ end }}
       </div>
       {{ end }}
     </div>
     {{ end }}
     
-    <div class="manual-content">
+    <div class="manual-content-column">
       {{ .Content }}
       
       {{ if .Params.manuals }}
-      <section class="manual-documents">
-        <h2>📖 Documentation disponible</h2>
-        <div class="documents-list">
+      <section class="manual-categories">
+        <h2>Documentation disponible</h2>
+        <div class="manuals-list">
           {{ range .Params.manuals }}
-          <div class="document-item">
-            <div class="document-info">
+          <div class="manual-item">
+            <div class="manual-info">
               <h3>{{ .title }}</h3>
               {{ if .lang }}
-              <span class="document-lang">{{ .lang }}</span>
+              <span class="pdf-lang">{{ .lang }}</span>
               {{ end }}
             </div>
-            <div class="document-actions">
-              <a href="{{ .file | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
-                📥 Télécharger PDF
-              </a>
-            </div>
+            <a href="{{ .file | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+              📥 Télécharger PDF
+            </a>
           </div>
           {{ end }}
         </div>
       </section>
       {{ end }}
     </div>
-  </section>
+  </div>
   {{ else }}
   <div class="empty-state">
     <p>Aucun manuel disponible pour le moment.</p>
