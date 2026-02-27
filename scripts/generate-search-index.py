@@ -147,7 +147,7 @@ def generate_index():
                     }
                     index.append(entry)
 
-    # 4. Indexer les manuels depuis info.yaml ou _index.md
+    # 4. Indexer tous les dossiers de manuels par leur nom
     manuels_dir = CONTENT_DIR / "manuels"
     if manuels_dir.exists():
         for category_dir in manuels_dir.iterdir():
@@ -158,36 +158,40 @@ def generate_index():
                 if not model_dir.is_dir() or model_dir.name.startswith("_"):
                     continue
 
-                metadata = None
+                url = f"/manuels/{category_dir.name}/{model_dir.name}/"
 
-                # Vérifier si c'est un dossier avec info.yaml
+                if url in indexed_urls:
+                    continue
+                indexed_urls.add(url)
+
+                # Utiliser le nom du dossier comme titre
+                title = model_dir.name
+
+                # Chercher description dans info.yaml ou _index.md si disponible
+                description = ""
                 metadata = get_info_yaml_data(model_dir)
-
-                # Sinon, chercher dans _index.md
-                if not metadata:
+                if metadata:
+                    description = metadata.get("description", "")
+                    title = metadata.get("title", title)
+                else:
                     index_file = model_dir / "_index.md"
                     if index_file.exists():
                         try:
                             content = index_file.read_text(encoding="utf-8")
-                            metadata, _ = parse_frontmatter(content)
-                        except Exception as e:
-                            print(f"Warning: Error reading {index_file}: {e}")
+                            meta, _ = parse_frontmatter(content)
+                            description = meta.get("description", "")
+                            title = meta.get("title", title)
+                        except:
+                            pass
 
-                if metadata:
-                    url = f"/manuels/{category_dir.name}/{model_dir.name}/"
-
-                    if url in indexed_urls:
-                        continue
-                    indexed_urls.add(url)
-
-                    entry = {
-                        "title": metadata.get("title", model_dir.name),
-                        "description": metadata.get("description", ""),
-                        "url": url,
-                        "content": metadata.get("description", ""),
-                        "section": "manuels",
-                    }
-                    index.append(entry)
+                entry = {
+                    "title": title,
+                    "description": description or f"Manuel de pièces pour {title}",
+                    "url": url,
+                    "content": description or f"Manuel de pièces pour {title}",
+                    "section": "manuels",
+                }
+                index.append(entry)
 
     return index
 
