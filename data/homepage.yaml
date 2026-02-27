@@ -3,8 +3,8 @@
 
 # Hero section
 hero:
-  title: "Votre spécialiste en équipements d'hiver"
-  subtitle: "Souffleuses à neige, balais rotatifs, lames et pièces de rechange"
+  title: "Tempête"
+  subtitle: "Tempête est le distributeur autorisé des pièces et produits Radtech ( www.radtech.ca), nous sommes fiers de vendre d’excellents produits fabriqués dans la région de Chaudière-Appalaches, et cela à d’excellent prix."
   button_primary:
     text: "Voir nos produits"
     url: "/produits/"
@@ -26,7 +26,7 @@ features:
     
   - title: "Expédition rapide"
     icon: "⚡"
-    description: "Pièces expédiées dans les 24-48h ouvrables"
+    description: "Pièces expédiées rapidement"
 
 # CTA Section (Call to Action)
 cta:

@@ -1,6 +1,6 @@
 baseURL = 'https://www.souffleur.ca/'
 languageCode = 'fr-CA'
-title = 'Concessionnaire Souffleuses & Pièces'
+title = 'Tempête est le distributeur autorisé des pièces et produits Radtech ( www.radtech.ca), nous sommes fiers de vendre d’excellents produits fabriqués dans la région de Chaudière-Appalaches, et cela à d’excellent prix.'
 
 # No theme - using custom layouts
 
@@ -18,12 +18,12 @@ title = 'Concessionnaire Souffleuses & Pièces'
 
 # Paramètres du site
 [params]
-  author = "Votre Concessionnaire"
-  description = "Spécialiste des souffleuses à neige, balais et équipements d'hiver"
-  phone = "(450) 123-4567"
-  email = "contact@example.com"
-  address = "123 Rue Principale, Ville, QC J0X 1X0"
-  hours = "Lun-Ven: 8h-17h | Sam: 9h-12h"
+  author = "Tempête"
+  description = "Tempête est le distributeur autorisé des pièces et produits Radtech ( www.radtech.ca), nous sommes fiers de vendre d’excellents produits fabriqués dans la région de Chaudière-Appalaches, et cela à d’excellent prix."
+  phone = "(418) 478-2118"
+  email = "david@tempete.ca"
+  address = "Thetford Mines"
+  hours = "Lun-Ven: 8h-17h"
   
   # Configuration recherche
   [params.search]
@@ -31,8 +31,7 @@ title = 'Concessionnaire Souffleuses & Pièces'
     
   # Réseaux sociaux
   [params.social]
-    facebook = ""
-    instagram = ""
+    facebook = "https://www.facebook.com/tempete.ca"
 
 # Menu principal
 [menu]
@@ -74,9 +73,9 @@ title = 'Concessionnaire Souffleuses & Pièces'
 [languages]
   [languages.fr]
     weight = 1
-    title = "Concessionnaire Souffleuses"
+    title = "Tempête"
     languageName = "Français"
   [languages.en]
     weight = 2
-    title = "Snow Blower Dealer"
+    title = "Snow-Blower.ca"
     languageName = "English"
