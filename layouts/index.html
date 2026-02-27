@@ -2,8 +2,8 @@
 {{ $homepage := index .Site.Data "homepage" }}
 
 <!-- Hero Section Amélioré -->
-<section class="hero">
-  <div class="hero-background"></div>
+<section class="hero" style="background-image: url('{{ "images/hero-bg.jpg" | relURL }}'); background-size: cover; background-position: center;">
+  <div class="hero-overlay"></div>
   <div class="container">
     <div class="hero-content">
       <span class="hero-badge">❄️ Spécialiste hivernal depuis 1985</span>
