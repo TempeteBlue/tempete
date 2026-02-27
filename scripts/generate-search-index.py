@@ -8,9 +8,27 @@ import json
 import re
 from pathlib import Path
 import yaml
+import unicodedata
 
 CONTENT_DIR = Path("content")
 OUTPUT_FILE = Path("static/search-index.json")
+
+
+def slugify(text):
+    """Convert text to URL-friendly slug (Hugo-style)"""
+    # Normalize unicode characters
+    text = unicodedata.normalize("NFKD", text)
+    # Convert to lowercase
+    text = text.lower()
+    # Replace spaces and underscores with hyphens
+    text = re.sub(r"[\s_]+", "-", text)
+    # Remove special characters except hyphens
+    text = re.sub(r"[^a-z0-9\-]", "", text)
+    # Remove multiple hyphens
+    text = re.sub(r"-+", "-", text)
+    # Strip hyphens from ends
+    text = text.strip("-")
+    return text
 
 
 def parse_frontmatter(content):
@@ -158,7 +176,10 @@ def generate_index():
                 if not model_dir.is_dir() or model_dir.name.startswith("_"):
                     continue
 
-                url = f"/manuels/{category_dir.name}/{model_dir.name}/"
+                # Créer URL avec slugification (comme Hugo)
+                category_slug = slugify(category_dir.name)
+                model_slug = slugify(model_dir.name)
+                url = f"/manuels/{category_slug}/{model_slug}/"
 
                 if url in indexed_urls:
                     continue

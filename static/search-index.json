@@ -1,12 +1,5 @@
 [
   {
-    "title": "DB6000",
-    "description": "Manuel de pièces pour DB6000",
-    "url": "/manuels/Débris/DB6000/",
-    "content": "Manuel de pièces pour DB6000",
-    "section": "manuels"
-  },
-  {
     "title": "Souffleuse Blizzard B54c 2022",
     "description": "Souffleuse professionnelle en excellent état - Faible kilométrage",
     "url": "/usage/Souffleur/blizzard-b54c-2022/",
@@ -19,13 +12,6 @@
     "url": "/produits/Souffleur/blizzard-b54c/",
     "content": "Souffleuse à neige professionnelle 54 pouces - Le meilleur rapport qualité-prix",
     "section": "produits"
-  },
-  {
-    "title": "SA92B / SA98B",
-    "description": "Manuels de pièces pour souffleuses SA92B et SA98B",
-    "url": "/manuels/Pene/sa92b-sa98b/",
-    "content": "# Souffleuses SA92B et SA98B\n\nLes souffleuses **SA92B** et **SA98B** sont des équipements professionnels de déneigement conçus pour les tracteurs de grande taille avec attache rapide compatible John Deere.\n\n## Caractéristiques\n\n### SA92B\n- Largeur de travail : 92 pouces (2337 mm)\n- Poids : 680 kg\n- Capacité : Jusqu'à 18 pouces de neige\n\n### SA98B  \n- Largeur de travail : 98 pouces (2489 mm)\n- Poids : 720 kg\n- Capacité : Jusqu'à 20 pouces de neige\n\n## Pièces courantes\n\nPour commander des pièces, ",
-    "section": "manuels"
   },
   {
     "title": "Balais Rotatif Pro 72",
@@ -77,17 +63,185 @@
     "section": "usage"
   },
   {
-    "title": "Blizzard B48",
-    "description": "Manuel de pièces",
-    "url": "/manuels/Pene/Blizzard B48/",
-    "content": "Manuel de pièces",
+    "title": "9424 Débris",
+    "description": "Manuel de pièces pour 9424 Débris",
+    "url": "/manuels/debris/9424-debris/",
+    "content": "Manuel de pièces pour 9424 Débris",
     "section": "manuels"
   },
   {
-    "title": "Modèle Exemple",
-    "description": "Manuel de pièces pour le modèle exemple",
-    "url": "/manuels/Pene/exemple-modele/",
-    "content": "Manuel de pièces pour le modèle exemple",
+    "title": "DB6000",
+    "description": "Manuel de pièces pour DB6000",
+    "url": "/manuels/debris/db6000/",
+    "content": "Manuel de pièces pour DB6000",
+    "section": "manuels"
+  },
+  {
+    "title": "Anciennes Souff. avant 1998",
+    "description": "Manuel de pièces pour Anciennes Souff. avant 1998",
+    "url": "/manuels/souffleuse-attaches-rapides/anciennes-souff-avant-1998/",
+    "content": "Manuel de pièces pour Anciennes Souff. avant 1998",
+    "section": "manuels"
+  },
+  {
+    "title": "B48-B54-B64",
+    "description": "Manuel de pièces pour B48-B54-B64",
+    "url": "/manuels/souffleuse-attaches-rapides/b48-b54-b64/",
+    "content": "Manuel de pièces pour B48-B54-B64",
+    "section": "manuels"
+  },
+  {
+    "title": "B74",
+    "description": "Manuel de pièces pour B74",
+    "url": "/manuels/souffleuse-attaches-rapides/b74/",
+    "content": "Manuel de pièces pour B74",
+    "section": "manuels"
+  },
+  {
+    "title": "B84-B94",
+    "description": "Manuel de pièces pour B84-B94",
+    "url": "/manuels/souffleuse-attaches-rapides/b84-b94/",
+    "content": "Manuel de pièces pour B84-B94",
+    "section": "manuels"
+  },
+  {
+    "title": "B84C-L",
+    "description": "Manuel de pièces pour B84C-L",
+    "url": "/manuels/souffleuse-attaches-rapides/b84c-l/",
+    "content": "Manuel de pièces pour B84C-L",
+    "section": "manuels"
+  },
+  {
+    "title": "BER0158 - Harnais John Deere Serie 4r",
+    "description": "Manuel de pièces pour BER0158 - Harnais John Deere Serie 4r",
+    "url": "/manuels/souffleuse-attaches-rapides/ber0158-harnais-john-deere-serie-4r/",
+    "content": "Manuel de pièces pour BER0158 - Harnais John Deere Serie 4r",
+    "section": "manuels"
+  },
+  {
+    "title": "H64-H76-H84 Ber-Vac Hydro",
+    "description": "Manuel de pièces pour H64-H76-H84 Ber-Vac Hydro",
+    "url": "/manuels/souffleuse-attaches-rapides/h64-h76-h84-ber-vac-hydro/",
+    "content": "Manuel de pièces pour H64-H76-H84 Ber-Vac Hydro",
+    "section": "manuels"
+  },
+  {
+    "title": "H76H-H84H Bervac Hydro",
+    "description": "Manuel de pièces pour H76H-H84H Bervac Hydro",
+    "url": "/manuels/souffleuse-attaches-rapides/h76h-h84h-bervac-hydro/",
+    "content": "Manuel de pièces pour H76H-H84H Bervac Hydro",
+    "section": "manuels"
+  },
+  {
+    "title": "S1SB-48_-54 Soufl. JD-ATT.RAP",
+    "description": "Manuel de pièces pour S1SB-48_-54 Soufl. JD-ATT.RAP",
+    "url": "/manuels/souffleuse-attaches-rapides/s1sb-48-54-soufl-jd-attrap/",
+    "content": "Manuel de pièces pour S1SB-48_-54 Soufl. JD-ATT.RAP",
+    "section": "manuels"
+  },
+  {
+    "title": "S1SB-54A-Serie John Deere 1",
+    "description": "Manuel de pièces pour S1SB-54A-Serie John Deere 1",
+    "url": "/manuels/souffleuse-attaches-rapides/s1sb-54a-serie-john-deere-1/",
+    "content": "Manuel de pièces pour S1SB-54A-Serie John Deere 1",
+    "section": "manuels"
+  },
+  {
+    "title": "S2RSC-SB-54 -Sous chassis John Deere-série 2R",
+    "description": "Manuel de pièces pour S2RSC-SB-54 -Sous chassis John Deere-série 2R",
+    "url": "/manuels/souffleuse-attaches-rapides/s2rsc-sb-54-sous-chassis-john-deere-serie-2r/",
+    "content": "Manuel de pièces pour S2RSC-SB-54 -Sous chassis John Deere-série 2R",
+    "section": "manuels"
+  },
+  {
+    "title": "S2RSC-SB-54-Souffl John Deere série 2R",
+    "description": "Manuel de pièces pour S2RSC-SB-54-Souffl John Deere série 2R",
+    "url": "/manuels/souffleuse-attaches-rapides/s2rsc-sb-54-souffl-john-deere-serie-2r/",
+    "content": "Manuel de pièces pour S2RSC-SB-54-Souffl John Deere série 2R",
+    "section": "manuels"
+  },
+  {
+    "title": "SA52 - 62",
+    "description": "Manuel de pièces pour SA52 - 62",
+    "url": "/manuels/souffleuse-attaches-rapides/sa52-62/",
+    "content": "Manuel de pièces pour SA52 - 62",
+    "section": "manuels"
+  },
+  {
+    "title": "SA54 - 64",
+    "description": "Manuel de pièces pour SA54 - 64",
+    "url": "/manuels/souffleuse-attaches-rapides/sa54-64/",
+    "content": "Manuel de pièces pour SA54 - 64",
+    "section": "manuels"
+  },
+  {
+    "title": "SA74 - 80",
+    "description": "Manuel de pièces pour SA74 - 80",
+    "url": "/manuels/souffleuse-attaches-rapides/sa74-80/",
+    "content": "Manuel de pièces pour SA74 - 80",
+    "section": "manuels"
+  },
+  {
+    "title": "SA74-L & SA80-L",
+    "description": "Manuel de pièces pour SA74-L & SA80-L",
+    "url": "/manuels/souffleuse-attaches-rapides/sa74-l-sa80-l/",
+    "content": "Manuel de pièces pour SA74-L & SA80-L",
+    "section": "manuels"
+  },
+  {
+    "title": "SA80I-SA92IB-Souffleuse commercial 80-92 Bervac",
+    "description": "Manuel de pièces pour SA80I-SA92IB-Souffleuse commercial 80-92 Bervac",
+    "url": "/manuels/souffleuse-attaches-rapides/sa80i-sa92ib-souffleuse-commercial-80-92-bervac/",
+    "content": "Manuel de pièces pour SA80I-SA92IB-Souffleuse commercial 80-92 Bervac",
+    "section": "manuels"
+  },
+  {
+    "title": "SA88 - SA92-L",
+    "description": "Manuel de pièces pour SA88 - SA92-L",
+    "url": "/manuels/souffleuse-attaches-rapides/sa88-sa92-l/",
+    "content": "Manuel de pièces pour SA88 - SA92-L",
+    "section": "manuels"
+  },
+  {
+    "title": "SA88-96-104 TRC- ancien 1996",
+    "description": "Manuel de pièces pour SA88-96-104 TRC- ancien 1996",
+    "url": "/manuels/souffleuse-attaches-rapides/sa88-96-104-trc-ancien-1996/",
+    "content": "Manuel de pièces pour SA88-96-104 TRC- ancien 1996",
+    "section": "manuels"
+  },
+  {
+    "title": "SA88-SA88TRC & TRCA & TRCB",
+    "description": "Manuel de pièces pour SA88-SA88TRC & TRCA & TRCB",
+    "url": "/manuels/souffleuse-attaches-rapides/sa88-sa88trc-trca-trcb/",
+    "content": "Manuel de pièces pour SA88-SA88TRC & TRCA & TRCB",
+    "section": "manuels"
+  },
+  {
+    "title": "SA92-98",
+    "description": "Manuel de pièces pour SA92-98",
+    "url": "/manuels/souffleuse-attaches-rapides/sa92-98/",
+    "content": "Manuel de pièces pour SA92-98",
+    "section": "manuels"
+  },
+  {
+    "title": "SA92-98-104-102 - TRC",
+    "description": "Manuel de pièces pour SA92-98-104-102 - TRC",
+    "url": "/manuels/souffleuse-attaches-rapides/sa92-98-104-102-trc/",
+    "content": "Manuel de pièces pour SA92-98-104-102 - TRC",
+    "section": "manuels"
+  },
+  {
+    "title": "SA92I",
+    "description": "Manuel de pièces pour SA92I",
+    "url": "/manuels/souffleuse-attaches-rapides/sa92i/",
+    "content": "Manuel de pièces pour SA92I",
+    "section": "manuels"
+  },
+  {
+    "title": "SA92LP",
+    "description": "Manuel de pièces pour SA92LP",
+    "url": "/manuels/souffleuse-attaches-rapides/sa92lp/",
+    "content": "Manuel de pièces pour SA92LP",
     "section": "manuels"
   }
 ]
