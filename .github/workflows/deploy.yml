@@ -51,6 +51,21 @@ jobs:
           # Delete .hugo_build.lock
           rm -f .hugo_build.lock 2>/dev/null || true
 
+      - name: Copy PDFs to static folder
+        run: |
+          echo "📄 Copying PDFs from content/manuels to static/pdf/manuels..."
+          # Create static/pdf/manuels directory
+          mkdir -p static/pdf/manuels
+          
+          # Copy all PDFs from content/manuels to static/pdf/manuels
+          find content/manuels -name "*.pdf" -type f | while read pdf_file; do
+            static_path="static/pdf/${pdf_file#content/}"
+            mkdir -p "$(dirname "$static_path")"
+            cp "$pdf_file" "$static_path"
+            echo "Copied PDF: $pdf_file -> $static_path"
+          done
+          echo "✅ PDFs copied successfully"
+
       - name: Convert PDFs to PNG
         run: |
           # Create static/images/manuels directory
