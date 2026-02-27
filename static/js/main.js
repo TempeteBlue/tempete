@@ -127,6 +127,7 @@ function initCarousel() {
   
   window.carouselTrack = track;
   window.currentSlide = 0;
+  window.slideCount = slideCount; // Store globally
 }
 
 function moveCarousel(direction) {
@@ -136,8 +137,8 @@ function moveCarousel(direction) {
   window.currentSlide += direction;
   
   if (window.currentSlide < 0) {
-    window.currentSlide = slideCount - 1;
-  } else if (window.currentSlide >= slideCount) {
+    window.currentSlide = window.slideCount - 1;
+  } else if (window.currentSlide >= window.slideCount) {
     window.currentSlide = 0;
   }
   

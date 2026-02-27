@@ -2,8 +2,12 @@
 {{ $data := merge .Params (dict 
   "title" (.Params.title | default .Title)
   "description" (.Params.description | default "")
+  "manuals" (.Params.manuals | default slice)
+  "images" (.Params.images | default slice)
 ) }}
 {{ $is_root := eq .RelPermalink "/manuels/" }}
+{{ $images := $data.images }}
+{{ $pdfs := $data.manuals }}
 <div class="container page-container">
   <header class="page-header">
     <h1 class="page-title">{{ $data.title }}</h1>
@@ -19,6 +23,7 @@
     <h2>Catégories de manuels</h2>
     <div class="category-grid">
       {{ range .Sections }}
+      {{ $modelCount := len .Pages }}
       <article class="category-card">
         <a href="{{ .RelPermalink }}" class="category-link">
           <div class="category-icon">📖</div>
@@ -26,7 +31,7 @@
           {{ if .Params.description }}
           <p class="category-description">{{ .Params.description }}</p>
           {{ end }}
-          <span class="category-count">{{ len .Pages }} modèle(s)</span>
+          <p class="category-count">{{ $modelCount }} modèle(s)</p>
         </a>
       </article>
       {{ end }}
@@ -37,14 +42,17 @@
     <p>Aucune catégorie disponible pour le moment.</p>
   </div>
   {{ end }}
-  {{ else }}
-  {{/* Sous-catégorie ou page de modèle */}}
-  {{ if .Sections }}
-  {{/* Niveau catégorie - Afficher les modèles */}}
+  
+  {{ else if .Sections }}
+  {{/* Niveau catégorie - Afficher les modèles (comme /manuels/debris/) */}}
   <section class="manual-categories">
     <h2>Modèles disponibles</h2>
     <div class="category-grid">
       {{ range .Sections }}
+      {{ $manualCount := len .Params.manuals }}
+      {{ if eq $manualCount 0 }}
+        {{ $manualCount = len .Pages }}
+      {{ end }}
       <article class="category-card">
         <a href="{{ .RelPermalink }}" class="category-link">
           <div class="category-icon">📄</div>
@@ -52,50 +60,127 @@
           {{ if .Params.description }}
           <p class="category-description">{{ .Params.description }}</p>
           {{ end }}
-          <span class="category-count">{{ len .Pages }} document(s)</span>
+          <p class="category-count">{{ $manualCount }} document(s)</p>
         </a>
       </article>
       {{ end }}
     </div>
   </section>
-  {{ else if .Params.manuals }}
-  {{/* Page de modèle avec manuels PDF - Utiliser le layout existant */}}
+  
+  <!-- Lien retour -->
+  <div class="back-link">
+    <a href="{{ "/manuels/" | relURL }}" class="btn btn-outline">← Retour aux catégories</a>
+  </div>
+  
+  {{ else if $pdfs }}
+  {{/* Page de modèle avec manuels PDF - Utiliser le layout existant de single.html */}}
   <div class="manual-layout">
-    {{ if .Params.images }}
+    {{ if $images }}
     <div class="manual-image-column">
-      {{ if eq (len .Params.images) 1 }}
-      <div class="single-image">
-        <img src="{{ index .Params.images 0 | absURL }}" alt="Aperçu du manuel" loading="lazy">
-      </div>
-      {{ else }}
       <div class="image-carousel">
-        {{ range .Params.images }}
-        <div class="carousel-slide">
-          <img src="{{ . | absURL }}" alt="Aperçu du manuel" loading="lazy">
+        {{ $imageCount := len $images }}
+        {{ if gt $imageCount 1 }}
+        <div class="carousel-container">
+          <div class="carousel-track" id="carouselTrack">
+            {{ range $images }}
+            {{ $imgName := . }}
+            {{ $pdfForImg := "" }}
+            {{ range $pdfs }}
+              {{ $pdfBase := .title }}
+              {{ $imgFile := path.Base $imgName }}
+              {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
+              {{ if in $pdfBase $imgBase }}
+                {{ $pdfForImg = .file }}
+              {{ end }}
+            {{ end }}
+            <div class="carousel-slide">
+              {{ if $pdfForImg }}
+              <a href="{{ $pdfForImg | absURL }}" target="_blank">
+              {{ end }}
+              <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+              {{ if $pdfForImg }}
+              </a>
+              {{ end }}
+            </div>
+            {{ end }}
+          </div>
+          <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+          <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+          <div class="carousel-dots">
+            {{ range $i, $_ := $images }}
+            <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
+            {{ end }}
+          </div>
+        </div>
+        {{ else }}
+        {{ $singleImg := index $images 0 }}
+        {{ $pdfForSingleImg := "" }}
+        {{ range $pdfs }}
+          {{ $pdfBase := .title }}
+          {{ $imgFile := path.Base $singleImg }}
+          {{ $imgBase := replaceRE "\\.[^.]+$" "" $imgFile }}
+          {{ if in $pdfBase $imgBase }}
+            {{ $pdfForSingleImg = .file }}
+          {{ end }}
+        {{ end }}
+        
+        <div class="single-image">
+          {{ if $pdfForSingleImg }}
+          <a href="{{ $pdfForSingleImg | absURL }}" target="_blank">
+          {{ end }}
+          <img src="{{ $singleImg | absURL }}" alt="{{ $data.title }}">
+          {{ if $pdfForSingleImg }}
+          </a>
+          {{ end }}
         </div>
         {{ end }}
       </div>
-      {{ end }}
     </div>
     {{ end }}
     
     <div class="manual-content-column">
       {{ .Content }}
       
-      {{ if .Params.manuals }}
-      <section class="manual-categories">
-        <h2>Documentation disponible</h2>
+      {{ if $pdfs }}
+      <section class="manuals-section">
+        <h2>📖 Manuels disponibles</h2>
         <div class="manuals-list">
-          {{ range .Params.manuals }}
-          <div class="manual-item">
-            <div class="manual-info">
-              <h3>{{ .title }}</h3>
-              {{ if .lang }}
-              <span class="pdf-lang">{{ .lang }}</span>
+          {{ range $pdfs }}
+           <div class="manual-item">
+             <div class="manual-info">
+               <h3>{{ .title }}</h3>
+               {{ $pdfLang := .lang }}
+               {{ if not $pdfLang }}
+                 {{ if in .title "-A " }}{{ $pdfLang = "Anglais" }}{{ end }}
+                 {{ if in .title "-F " }}{{ $pdfLang = "Français" }}{{ end }}
+               {{ end }}
+               {{ if $pdfLang }}<span class="pdf-lang">{{ $pdfLang }}</span>{{ end }}
+              
+              {{ $parts := split .title " " }}
+              {{ $partCount := len $parts }}
+              {{ if ge $partCount 3 }}
+              <div class="pdf-meta">
+                {{ if eq $partCount 3 }}
+                <p><strong>Numéro de modèle:</strong> {{ index $parts 0 }}</p>
+                <p><strong>Numéro de série:</strong> {{ index $parts 2 }}</p>
+                {{ else if eq $partCount 4 }}
+                <p><strong>Numéro de modèle:</strong> {{ index $parts 0 }} {{ index $parts 1 }}</p>
+                <p><strong>Numéro de série:</strong> {{ index $parts 3 }}</p>
+                {{ else }}
+                <p><strong>Numéro de modèle:</strong> {{ index $parts 0 }} {{ index $parts 1 }}</p>
+                <p><strong>Numéro de série:</strong> {{ index $parts (sub $partCount 1) }}</p>
+                {{ end }}
+              </div>
               {{ end }}
             </div>
-            <a href="{{ .file | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
-              📥 Télécharger PDF
+            <a href="{{ .file | absURL }}" class="btn btn-primary" target="_blank">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <line x1="9" y1="15" x2="15" y2="15"></line>
+              </svg>
+              Télécharger
             </a>
           </div>
           {{ end }}
@@ -104,15 +189,14 @@
       {{ end }}
     </div>
   </div>
-  {{ else }}
-  <div class="empty-state">
-    <p>Aucun manuel disponible pour le moment.</p>
-  </div>
-  {{ end }}
   
   <!-- Lien retour -->
   <div class="back-link">
-    <a href="{{ "/manuels/" | relURL }}" class="btn btn-outline">← Retour aux manuels</a>
+    <a href="{{ .Parent.RelPermalink }}" class="btn btn-outline">← Retour aux modèles</a>
+  </div>
+  {{ else }}
+  <div class="empty-state">
+    <p>Aucun manuel disponible pour le moment.</p>
   </div>
   {{ end }}
 </div>
