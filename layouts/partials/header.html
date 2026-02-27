@@ -37,16 +37,10 @@
           </button>
         </div>
         
-        <!-- Sélecteur de langue (si multilingue) -->
-        {{ if .Site.IsMultiLingual }}
+        <!-- Sélecteur de langue -->
         <div class="language-selector">
-          {{ range .Site.Languages }}
-          <a href="{{ $.RelPermalink | relLangURL }}" class="lang-link{{ if eq . $.Site.Language }} active{{ end }}">
-            {{ .Lang | upper }}
-          </a>
-          {{ end }}
+          <a href="https://snow-blower.ca" class="lang-link">English</a>
         </div>
-        {{ end }}
       </nav>
     </div>
   </div>
