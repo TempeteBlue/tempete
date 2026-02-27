@@ -36,7 +36,15 @@ def find_pdfs_and_images(folder_path):
                         "lang": lang,
                     }
                 )
-            elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+
+    # Look for images in static/images/manuels instead of content/manuels
+    static_images_path = folder_path.replace("content/", "static/images/")
+    if os.path.exists(static_images_path):
+        for item in os.listdir(static_images_path):
+            item_path = os.path.join(static_images_path, item)
+            if os.path.isfile(item_path) and item.lower().endswith(
+                (".jpg", ".jpeg", ".png", ".webp")
+            ):
                 images.append(
                     f"images/{folder_path.replace('content/', '').replace(os.sep, '/')}/{item}"
                 )

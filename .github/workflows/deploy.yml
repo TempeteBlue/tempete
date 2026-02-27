@@ -53,12 +53,18 @@ jobs:
 
       - name: Convert PDFs to PNG
         run: |
-          # Process PDFs in content/manuels
+          # Create static/images/manuels directory
+          mkdir -p static/images/manuels
+          
+          # Process PDFs in content/manuels and copy PNGs to static
           find content/manuels -name "*.pdf" -type f | while read pdf_file; do
             pdf_dir=$(dirname "$pdf_file")
             pdf_name=$(basename "$pdf_file" .pdf)
-            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$pdf_dir/$pdf_name" 2>/dev/null; then
-              echo "Converted: $pdf_file -> $pdf_dir/$pdf_name.png"
+            # Create corresponding directory in static
+            static_dir="static/images/${pdf_dir#content/}"
+            mkdir -p "$static_dir"
+            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$static_dir/$pdf_name" 2>/dev/null; then
+              echo "Converted: $pdf_file -> $static_dir/$pdf_name.png"
             else
               echo "Skipped (error): $pdf_file"
             fi
@@ -75,12 +81,20 @@ jobs:
               echo "Skipped (error): $pdf_file"
             fi
           done
+          
+          # Copy any existing PNGs from content/manuels to static/images/manuels
+          find content/manuels -name "*.png" -type f | while read png_file; do
+            static_path="static/images/${png_file#content/}"
+            mkdir -p "$(dirname "$static_path")"
+            cp "$png_file" "$static_path"
+            echo "Copied: $png_file -> $static_path"
+          done
 
       - name: Commit PNG files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "feat: Add manuel page pictures from PDF first pages"
-          file_pattern: "content/manuels/**/*.png"
+          file_pattern: "static/images/manuels/**/*.png"
           push_options: '--force-with-lease'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
