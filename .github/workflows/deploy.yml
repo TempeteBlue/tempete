@@ -81,6 +81,7 @@ jobs:
         with:
           commit_message: "feat: Add manuel page pictures from PDF first pages"
           file_pattern: "content/manuels/**/*.png"
+          push_options: '--force-with-lease'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
