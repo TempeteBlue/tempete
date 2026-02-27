@@ -147,7 +147,7 @@ def generate_index():
                     }
                     index.append(entry)
 
-    # 4. Indexer les manuels depuis info.yaml
+    # 4. Indexer les manuels depuis info.yaml ou _index.md
     manuels_dir = CONTENT_DIR / "manuels"
     if manuels_dir.exists():
         for category_dir in manuels_dir.iterdir():
@@ -158,8 +158,21 @@ def generate_index():
                 if not model_dir.is_dir() or model_dir.name.startswith("_"):
                     continue
 
+                metadata = None
+
                 # Vérifier si c'est un dossier avec info.yaml
                 metadata = get_info_yaml_data(model_dir)
+
+                # Sinon, chercher dans _index.md
+                if not metadata:
+                    index_file = model_dir / "_index.md"
+                    if index_file.exists():
+                        try:
+                            content = index_file.read_text(encoding="utf-8")
+                            metadata, _ = parse_frontmatter(content)
+                        except Exception as e:
+                            print(f"Warning: Error reading {index_file}: {e}")
+
                 if metadata:
                     url = f"/manuels/{category_dir.name}/{model_dir.name}/"
 
