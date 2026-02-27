@@ -45,14 +45,14 @@
       <article class="product-card used-equipment">
         {{ if .Params.images }}
         <div class="product-image">
-          <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><span>❄️</span></div\'">
+          <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><img src=\'{{ "images/icone.svg" | relURL }}\' alt=\'\' style=\'width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);\'></div>'">
           {{ if .Params.condition }}
           <span class="condition-badge {{ .Params.condition | lower }}">{{ .Params.condition }}</span>
           {{ end }}
         </div>
         {{ else }}
         <div class="product-image">
-          <div class="product-placeholder"><span>❄️</span></div>
+          <div class="product-placeholder"><img src="{{ "images/icone.svg" | relURL }}" alt="" style="width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);"></div>
           {{ if .Params.condition }}
           <span class="condition-badge {{ .Params.condition | lower }}">{{ .Params.condition }}</span>
           {{ end }}
