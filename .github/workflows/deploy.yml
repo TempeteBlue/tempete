@@ -53,9 +53,19 @@ jobs:
 
       - name: Copy PDFs to static folder
         run: |
-          echo "📄 Copying PDFs from content/manuels to static/pdf/manuels..."
+          echo "📄 Syncing PDFs from content/manuels to static/pdf/manuels..."
           # Create static/pdf/manuels directory
           mkdir -p static/pdf/manuels
+          
+          # Clean up orphaned PDFs in static (remove PDFs no longer in content)
+          echo "🧹 Cleaning up orphaned PDFs..."
+          find static/pdf/manuels -name "*.pdf" -type f | while read static_pdf; do
+            content_pdf="content${static_pdf#static/pdf}"
+            if [ ! -f "$content_pdf" ]; then
+              echo "Removing orphaned PDF: $static_pdf (no longer in content)"
+              rm -f "$static_pdf"
+            fi
+          done
           
           # Copy all PDFs from content/manuels to static/pdf/manuels
           find content/manuels -name "*.pdf" -type f | while read pdf_file; do
@@ -64,40 +74,54 @@ jobs:
             cp "$pdf_file" "$static_path"
             echo "Copied PDF: $pdf_file -> $static_path"
           done
-          echo "✅ PDFs copied successfully"
+          echo "✅ PDFs synced successfully"
 
       - name: Convert PDFs to PNG
         run: |
           # Create static/images/manuels directory
           mkdir -p static/images/manuels
           
-          # Process PDFs in content/manuels and copy PNGs to static
-          find content/manuels -name "*.pdf" -type f | while read pdf_file; do
-            pdf_dir=$(dirname "$pdf_file")
-            pdf_name=$(basename "$pdf_file" .pdf)
-            # Create corresponding directory in static
-            static_dir="static/images/${pdf_dir#content/}"
-            mkdir -p "$static_dir"
-            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$static_dir/$pdf_name" 2>/dev/null; then
-              echo "Converted: $pdf_file -> $static_dir/$pdf_name.png"
-            else
-              echo "Skipped (error): $pdf_file"
+          # Clean up orphaned PNGs (remove PNGs without corresponding PDFs)
+          echo "🧹 Cleaning up orphaned PNGs..."
+          find static/images/manuels -name "*.png" -type f | while read png_file; do
+            # Get the corresponding PDF path
+            pdf_path="content${png_file#static/images}"
+            pdf_path="${png_file%.png}.pdf"
+            
+            # Check if PDF exists in content
+            if [ ! -f "$pdf_path" ]; then
+              echo "Removing orphaned PNG: $png_file (no corresponding PDF)"
+              rm -f "$png_file"
             fi
           done
           
-          # Process PDFs in static/pdf/manuels
-          find static/pdf/manuels -name "*.pdf" -type f | while read pdf_file; do
+          # Process PDFs in content/manuels and convert only if PNG doesn't exist
+          echo "📄 Converting PDFs to PNGs (skip if already exists)..."
+          find content/manuels -name "*.pdf" -type f | while read pdf_file; do
+            pdf_dir=$(dirname "$pdf_file")
             pdf_name=$(basename "$pdf_file" .pdf)
-            output_dir="content/manuels/$(dirname "${pdf_file#static/pdf/manuels/}")"
-            mkdir -p "$output_dir"
-            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$output_dir/$pdf_name" 2>/dev/null; then
-              echo "Converted: $pdf_file -> $output_dir/$pdf_name.png"
+            static_dir="static/images/${pdf_dir#content/}"
+            png_file="$static_dir/$pdf_name.png"
+            
+            # Create directory
+            mkdir -p "$static_dir"
+            
+            # Skip if PNG already exists
+            if [ -f "$png_file" ]; then
+              echo "Skipping: $pdf_file (PNG already exists: $png_file)"
+              continue
+            fi
+            
+            # Convert PDF to PNG
+            if pdftoppm -png -f 1 -l 1 -singlefile -r 150 "$pdf_file" "$static_dir/$pdf_name" 2>/dev/null; then
+              echo "Converted: $pdf_file -> $png_file"
             else
-              echo "Skipped (error): $pdf_file"
+              echo "Error converting: $pdf_file"
             fi
           done
           
           # Copy any existing PNGs from content/manuels to static/images/manuels
+          echo "📋 Copying existing PNGs from content to static..."
           find content/manuels -name "*.png" -type f | while read png_file; do
             static_path="static/images/${png_file#content/}"
             mkdir -p "$(dirname "$static_path")"

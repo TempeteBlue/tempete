@@ -1,0 +1,111 @@
+{{ define "main" }}
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+) }}
+{{ $is_root := eq .RelPermalink "/manuels/" }}
+<div class="container page-container">
+  <header class="page-header">
+    <h1 class="page-title">{{ $data.title }}</h1>
+    {{ if $data.description }}
+    <p class="page-description">{{ $data.description }}</p>
+    {{ end }}
+  </header>
+
+  {{ if $is_root }}
+  {{/* Page racine /manuels/ - Afficher les catégories */}}
+  {{ if .Sections }}
+  <section class="categories-grid-section">
+    <div class="categories-grid">
+      {{ range .Sections }}
+      <article class="category-card">
+        <a href="{{ .RelPermalink }}" class="category-link">
+          <div class="category-icon">📖</div>
+          <h3 class="category-title">{{ .Title }}</h3>
+          {{ if .Params.description }}
+          <p class="category-description">{{ .Params.description }}</p>
+          {{ end }}
+          <span class="category-count">{{ len .Pages }} modèle(s)</span>
+        </a>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+  {{ else }}
+  <div class="empty-state">
+    <p>Aucune catégorie disponible pour le moment.</p>
+  </div>
+  {{ end }}
+  {{ else }}
+  {{/* Sous-catégorie ou page de modèle */}}
+  {{ if .Sections }}
+  {{/* Niveau catégorie - Afficher les modèles */}}
+  <section class="categories-grid-section">
+    <div class="categories-grid">
+      {{ range .Sections }}
+      <article class="category-card">
+        <a href="{{ .RelPermalink }}" class="category-link">
+          <div class="category-icon">📄</div>
+          <h3 class="category-title">{{ .Title }}</h3>
+          {{ if .Params.description }}
+          <p class="category-description">{{ .Params.description }}</p>
+          {{ end }}
+          <span class="category-count">{{ len .Pages }} document(s)</span>
+        </a>
+      </article>
+      {{ end }}
+    </div>
+  </section>
+  {{ else if .Params.manuals }}
+  {{/* Page de modèle avec manuels PDF */}}
+  <section class="manual-detail">
+    {{ if .Params.images }}
+    <div class="manual-images">
+      {{ range .Params.images }}
+      <div class="manual-image">
+        <img src="{{ . | absURL }}" alt="Aperçu du manuel" loading="lazy">
+      </div>
+      {{ end }}
+    </div>
+    {{ end }}
+    
+    <div class="manual-content">
+      {{ .Content }}
+      
+      {{ if .Params.manuals }}
+      <section class="manual-documents">
+        <h2>📖 Documentation disponible</h2>
+        <div class="documents-list">
+          {{ range .Params.manuals }}
+          <div class="document-item">
+            <div class="document-info">
+              <h3>{{ .title }}</h3>
+              {{ if .lang }}
+              <span class="document-lang">{{ .lang }}</span>
+              {{ end }}
+            </div>
+            <div class="document-actions">
+              <a href="{{ .file | absURL }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                📥 Télécharger PDF
+              </a>
+            </div>
+          </div>
+          {{ end }}
+        </div>
+      </section>
+      {{ end }}
+    </div>
+  </section>
+  {{ else }}
+  <div class="empty-state">
+    <p>Aucun manuel disponible pour le moment.</p>
+  </div>
+  {{ end }}
+  
+  <!-- Lien retour -->
+  <div class="back-link">
+    <a href="{{ "/manuels/" | relURL }}" class="btn btn-outline">← Retour aux manuels</a>
+  </div>
+  {{ end }}
+</div>
+{{ end }}
