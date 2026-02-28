@@ -115,19 +115,63 @@ function displaySearchResults(results) {
 }
 
 // Carousel functionality
-let currentSlide = 0;
-let slideCount = 0;
+window.currentSlide = 0;
+window.slideCount = 0;
+window.carouselTrack = null;
 
 function initCarousel() {
+  console.log('Initializing carousel...');
   const track = document.getElementById('carouselTrack');
-  if (!track) return;
+  if (!track) {
+    console.log('No carousel track found');
+    return;
+  }
   
-  slideCount = track.children.length;
-  if (slideCount <= 1) return;
+  const count = track.children.length;
+  console.log('Carousel found with', count, 'slides');
+  
+  if (count <= 1) {
+    console.log('Not enough slides for carousel');
+    return;
+  }
   
   window.carouselTrack = track;
   window.currentSlide = 0;
-  window.slideCount = slideCount; // Store globally
+  window.slideCount = count;
+  console.log('Carousel initialized successfully');
+}
+
+function moveCarousel(direction) {
+  console.log('Moving carousel', direction);
+  const track = window.carouselTrack;
+  if (!track) {
+    console.log('No carousel track available');
+    return;
+  }
+  
+  window.currentSlide += direction;
+  
+  if (window.currentSlide < 0) {
+    window.currentSlide = window.slideCount - 1;
+  } else if (window.currentSlide >= window.slideCount) {
+    window.currentSlide = 0;
+  }
+  
+  track.style.transform = `translateX(-${window.currentSlide * 100}%)`;
+  updateDots();
+}
+
+function goToSlide(index) {
+  console.log('Going to slide', index);
+  const track = window.carouselTrack;
+  if (!track) {
+    console.log('No carousel track available');
+    return;
+  }
+  
+  window.currentSlide = index;
+  track.style.transform = `translateX(-${window.currentSlide * 100}%)`;
+  updateDots();
 }
 
 function moveCarousel(direction) {
@@ -161,6 +205,10 @@ function updateDots() {
     dot.classList.toggle('active', i === window.currentSlide);
   });
 }
+
+// Make functions globally available for onclick handlers
+window.moveCarousel = moveCarousel;
+window.goToSlide = goToSlide;
 
 // Initialize carousel on page load
 document.addEventListener('DOMContentLoaded', initCarousel);

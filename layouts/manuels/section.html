@@ -49,9 +49,9 @@
     <h2>Modèles disponibles</h2>
     <div class="category-grid">
       {{ range .Sections }}
-      {{ $manualCount := len .Params.manuals }}
-      {{ if eq $manualCount 0 }}
-        {{ $manualCount = len .Pages }}
+      {{ $itemCount := len .Pages }}
+      {{ if eq $itemCount 0 }}
+        {{ $itemCount = len .Params.manuals }}
       {{ end }}
       <article class="category-card">
         <a href="{{ .RelPermalink }}" class="category-link">
@@ -60,7 +60,7 @@
           {{ if .Params.description }}
           <p class="category-description">{{ .Params.description }}</p>
           {{ end }}
-          <p class="category-count">{{ $manualCount }} document(s)</p>
+          <p class="category-count">{{ $itemCount }} élément(s)</p>
         </a>
       </article>
       {{ end }}
