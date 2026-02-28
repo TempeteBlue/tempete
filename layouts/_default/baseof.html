@@ -52,10 +52,10 @@
       "contactType": "customer service",
       "areaServed": "CA",
       "availableLanguage": ["French"]
-    },
+    }{{ if .Site.Params.social }},
     "sameAs": [
-      {{ range $i, $social := .Site.Params.social }}{{ if $i }}, {{ end }}"{{ $social.url }}"{{ end }}
-    ]
+      {{ $first := true }}{{ range $key, $value := .Site.Params.social }}{{ if not $first }}, {{ end }}{{ $first = false }}"{{ $value }}"{{ end }}
+    ]{{ end }}
   }
   </script>
   
