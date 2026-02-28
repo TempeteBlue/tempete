@@ -1555,14 +1555,15 @@ h4 { font-size: var(--font-size-xl); }
     top: 4.5rem;
     left: 0;
     right: 0;
-    bottom: 0;
     background: var(--color-primary);
     flex-direction: column;
     padding: var(--spacing-lg);
     transform: translateX(100%);
     transition: transform var(--transition);
-    overflow-y: auto;
     z-index: 1000;
+    height: auto;
+    max-height: calc(100vh - 4.5rem);
+    overflow-y: visible;
   }
   
   .main-nav.active {
