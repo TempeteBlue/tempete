@@ -15,15 +15,14 @@ OUTPUT_FILE = Path("static/search-index.json")
 
 
 def slugify(text):
-    """Convert text to URL-friendly slug (Hugo-style) - preserve accents"""
+    """Convert text to URL-friendly slug (Hugo-style) - preserve accents and multiple hyphens"""
     # Convert to lowercase
     text = text.lower()
-    # Replace spaces and underscores with hyphens
+    # Replace spaces and underscores with hyphens (preserve multiple spaces as multiple hyphens)
     text = re.sub(r"[\s_]+", "-", text)
     # Remove special characters but keep accented letters (àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ)
     text = re.sub(r"[^a-z0-9àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ\-]", "", text)
-    # Remove multiple hyphens
-    text = re.sub(r"-+", "-", text)
+    # Note: Hugo preserves multiple hyphens from multiple spaces, so we don't collapse them
     # Strip hyphens from ends
     text = text.strip("-")
     return text
