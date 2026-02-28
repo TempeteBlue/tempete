@@ -18,7 +18,9 @@ def slugify(text):
     """Convert text to URL-friendly slug (Hugo-style) - matches Hugo's behavior exactly"""
     # Convert to lowercase
     text = text.lower()
-    # Hugo removes & completely (not replaced with space)
+    # Hugo treats " & " as a word separator (replaces with single space)
+    text = text.replace(" & ", " ")
+    # Also handle standalone &
     text = text.replace("&", "")
     # Replace EACH space with a hyphen (preserve multiple spaces as multiple hyphens)
     text = re.sub(r"[\s]", "-", text)
