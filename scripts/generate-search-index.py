@@ -21,12 +21,17 @@ def slugify(text):
     # Hugo treats " & " as a word separator (replaces with single space)
     text = text.replace(" & ", " ")
     # Also handle standalone &
-    text = text.replace("&", "")
-    # Replace EACH space with a hyphen (preserve multiple spaces as multiple hyphens)
+    text = text.replace("&", " ")
+    # Remove parentheses, commas and other special chars that Hugo removes (keep dots!)
+    # Hugo removes: ()[]{},;:!?"'`~@#$%^*+=|\<>/
+    text = re.sub(r"[\(\)\[\]\{\},;:!?\"\'`~@#$%^*+=|\\<>/]", "", text)
+    # Now replace EACH space with a hyphen (preserve multiple spaces as multiple hyphens)
     text = re.sub(r"[\s]", "-", text)
-    # Remove special characters but keep accented letters AND dots
+    # Remove any remaining special characters but keep accented letters AND dots
     text = re.sub(r"[^a-z0-9àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ.\-]", "", text)
-    # Note: Hugo preserves multiple hyphens from multiple spaces, so we don't collapse them
+    # Hugo collapses multiple hyphens? No, let's check...
+    # Actually Hugo preserves them but let's collapse to match observed behavior
+    # Hugo does NOT collapse: "juil.2006" stays "juil.2006", not "juil-2006"
     # Strip hyphens from ends
     text = text.strip("-")
     return text
