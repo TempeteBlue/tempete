@@ -18,8 +18,8 @@ def slugify(text):
     """Convert text to URL-friendly slug (Hugo-style) - preserve accents and multiple hyphens"""
     # Convert to lowercase
     text = text.lower()
-    # Replace spaces and underscores with hyphens (preserve multiple spaces as multiple hyphens)
-    text = re.sub(r"[\s_]+", "-", text)
+    # Replace EACH space and underscore with a hyphen (preserve multiple spaces as multiple hyphens)
+    text = re.sub(r"[\s_]", "-", text)
     # Remove special characters but keep accented letters (àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ)
     text = re.sub(r"[^a-z0-9àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ\-]", "", text)
     # Note: Hugo preserves multiple hyphens from multiple spaces, so we don't collapse them
