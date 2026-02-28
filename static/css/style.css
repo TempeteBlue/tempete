@@ -1561,7 +1561,7 @@ h4 { font-size: var(--font-size-xl); }
     transform: translateX(100%);
     transition: transform var(--transition);
     z-index: 1000;
-    height: auto;
+    height: fit-content;
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
     display: flex;
