@@ -12,8 +12,11 @@
 ) }}
 {{ $images := $data.images }}
 {{ $documents := $data.documents }}
+{{ $firstImage := "" }}
+{{ if $images }}{{ $firstImage = index $images 0 }}{{ end }}
+
 <div class="container page-container">
-  <article class="product-page">
+  <article class="product-page" itemscope itemtype="https://schema.org/Product">
     <div class="product-layout">
       <!-- Colonne images -->
       <div class="product-gallery">
@@ -24,7 +27,7 @@
             <div class="carousel-track" id="carouselTrack">
               {{ range $images }}
               <div class="carousel-slide">
-                <img src="{{ . | absURL }}" alt="{{ $data.title }}">
+                <img src="{{ . | absURL }}" alt="{{ $data.title }}" itemprop="image">
               </div>
               {{ end }}
             </div>
@@ -38,7 +41,7 @@
           </div>
           {{ else }}
           <figure class="product-main-image">
-            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image">
+            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image" itemprop="image">
           </figure>
           {{ end }}
         {{ else }}
@@ -51,25 +54,27 @@
       <!-- Colonne informations -->
       <div class="product-details">
         <header class="product-header">
-          <h1 class="product-title">{{ $data.title }}</h1>
+          <h1 class="product-title" itemprop="name">{{ $data.title }}</h1>
           {{ if $data.description }}
-          <p class="product-subtitle">{{ $data.description }}</p>
+          <p class="product-subtitle" itemprop="description">{{ $data.description }}</p>
           {{ end }}
           
           <!-- Prix -->
           {{ if $data.price }}
-          <div class="price-block">
-            <span class="price">{{ $data.price }}</span>
+          <div class="price-block" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <span class="price" itemprop="price">{{ $data.price }}</span>
+            <meta itemprop="priceCurrency" content="CAD">
             {{ if $data.price_note }}
             <span class="price-note">{{ $data.price_note }}</span>
             {{ end }}
+            <link itemprop="availability" href="{{ if $data.in_stock }}https://schema.org/InStock{{ else }}https://schema.org/OutOfStock{{ end }}">
           </div>
           {{ end }}
           
           <!-- SKU et Stock -->
           <div class="product-meta">
             {{ if $data.sku }}
-            <span class="meta-item"><strong>Référence:</strong> {{ $data.sku }}</span>
+            <span class="meta-item" itemprop="sku"><strong>Référence:</strong> {{ $data.sku }}</span>
             {{ end }}
             <span class="meta-item">
               <strong>Disponibilité:</strong> 
@@ -136,6 +141,43 @@
     </div>
   </article>
 </div>
+{{ end }}
+
+{{ define "structured-data" }}
+{{ $data := merge .Params (dict 
+  "title" (.Params.title | default .Title)
+  "description" (.Params.description | default "")
+  "images" (.Params.images | default slice)
+  "price" (.Params.price | default "")
+  "in_stock" (.Params.in_stock | default true)
+  "sku" (.Params.sku | default "")
+) }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ $data.title | jsonify }},
+  "description": {{ $data.description | jsonify }},
+  {{ with $data.sku }}"sku": {{ . | jsonify }},{{ end }}
+  {{ if $data.images }}
+  "image": [
+    {{ range $i, $img := $data.images }}{{ if $i }}, {{ end }}"{{ $img | absURL }}"{{ end }}
+  ],
+  {{ end }}
+  {{ if $data.price }}
+  "offers": {
+    "@type": "Offer",
+    "price": {{ replaceRE "[^0-9.]" "" $data.price | jsonify }},
+    "priceCurrency": "CAD",
+    "availability": {{ if $data.in_stock }}"https://schema.org/InStock"{{ else }}"https://schema.org/OutOfStock"{{ end }},
+    "url": {{ .Permalink | jsonify }},
+    "seller": {
+      "@type": "Organization",
+      "name": {{ .Site.Title | jsonify }}
+    }
+  }{{ end }}
+}
+</script>
 {{ end }}
 
 {{ define "scripts" }}

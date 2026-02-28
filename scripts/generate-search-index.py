@@ -18,9 +18,8 @@ def slugify(text):
     """Convert text to URL-friendly slug (Hugo-style) - matches Hugo's behavior exactly"""
     # Convert to lowercase
     text = text.lower()
-    # Hugo removes & and other special characters but keeps dots
-    # Replace & with space (will become hyphen)
-    text = text.replace("&", " ")
+    # Hugo removes & completely (not replaced with space)
+    text = text.replace("&", "")
     # Replace EACH space with a hyphen (preserve multiple spaces as multiple hyphens)
     text = re.sub(r"[\s]", "-", text)
     # Remove special characters but keep accented letters AND dots
@@ -29,6 +28,14 @@ def slugify(text):
     # Strip hyphens from ends
     text = text.strip("-")
     return text
+
+
+def encode_url_component(text):
+    """Encode URL component properly for French characters"""
+    # Python's quote doesn't handle Unicode well, so we encode manually
+    import urllib.parse
+
+    return urllib.parse.quote(text, safe="/")
 
 
 def parse_frontmatter(content):
