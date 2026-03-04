@@ -1,0 +1,77 @@
+name: Sync Content to Snowblower (English Site)
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'content/**'
+      - 'hugo.toml'
+      - 'data/**'
+      - 'static/**'
+  workflow_dispatch:
+
+jobs:
+  sync-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: TempeteBlue/snowblower
+          path: snowblower
+          token: ${{ secrets.API_TOKEN_GITHUB }}
+          fetch-depth: 0
+
+      - name: Sync content folder
+        run: |
+          echo "🔄 Syncing content to snowblower repository..."
+          
+          # Remove old content in target repo
+          rm -rf snowblower/content/*
+          
+          # Copy content folder
+          cp -r content/* snowblower/content/ 2>/dev/null || true
+          
+          # Copy hugo.toml (will be adapted for English)
+          cp hugo.toml snowblower/hugo.toml
+          
+          # Copy data folder
+          rm -rf snowblower/data/*
+          cp -r data/* snowblower/data/ 2>/dev/null || true
+          
+          # Copy static folder content (excluding generated files)
+          mkdir -p snowblower/static
+          rsync -av --exclude='images/manuels' --exclude='pdf/manuels' static/ snowblower/static/ 2>/dev/null || true
+          
+          echo "✅ Content synced successfully"
+
+      - name: Commit and push to snowblower
+        run: |
+          cd snowblower
+          
+          # Configure git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Check if there are changes
+          if git diff --quiet HEAD; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          # Stage changes
+          git add -A
+          
+          # Commit with original commit message
+          original_msg="${{ github.event.head_commit.message }}"
+          git commit -m "sync: $original_msg [from tempete@${{ github.sha }}]"
+          
+          # Push to target repo
+          git push origin HEAD
+          
+          echo "✅ Content pushed to snowblower repository"
