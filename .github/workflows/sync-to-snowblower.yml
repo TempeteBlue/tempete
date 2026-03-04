@@ -8,6 +8,9 @@ on:
       - 'hugo.toml'
       - 'data/**'
       - 'static/**'
+      - 'layouts/**'
+      - 'archetypes/**'
+      - '.github/workflows/sync-to-snowblower.yml'
   workflow_dispatch:
 
 jobs:
@@ -19,20 +22,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout target repository
-        uses: actions/checkout@v4
-        with:
-          repository: TempeteBlue/snowblower
-          path: snowblower
-          token: ${{ secrets.API_TOKEN_GITHUB }}
-          fetch-depth: 0
+      - name: Setup target repository
+        run: |
+          echo "🔄 Setting up snowblower repository..."
+          
+          # Clone target repository or initialize if empty
+          git clone --depth=1 https://x-access-token:${{ secrets.API_TOKEN_GITHUB }}@github.com/TempeteBlue/snowblower.git snowblower 2>/dev/null || {
+            echo "Repository not found or empty, will initialize"
+            mkdir -p snowblower
+            cd snowblower
+            git init
+            git remote add origin https://x-access-token:${{ secrets.API_TOKEN_GITHUB }}@github.com/TempeteBlue/snowblower.git
+          }
+          
+          cd snowblower
+          
+          # Try to fetch existing content
+          git fetch origin main 2>/dev/null || git fetch origin master 2>/dev/null || echo "No existing branch found"
+          
+          # Checkout or create main branch
+          git checkout main 2>/dev/null || git checkout -b main
+          
+          echo "✅ Repository setup complete"
 
       - name: Sync content folder
         run: |
           echo "🔄 Syncing content to snowblower repository..."
           
-          # Remove old content in target repo
-          rm -rf snowblower/content/*
+          # Create directories if they don't exist
+          mkdir -p snowblower/content
+          mkdir -p snowblower/data
+          mkdir -p snowblower/static
+          mkdir -p snowblower/layouts
+          mkdir -p snowblower/archetypes
+          
+          # Remove old content in target repo (preserve .git)
+          find snowblower/content -mindepth 1 -delete 2>/dev/null || true
+          find snowblower/data -mindepth 1 -delete 2>/dev/null || true
+          find snowblower/static -mindepth 1 -delete 2>/dev/null || true
+          find snowblower/layouts -mindepth 1 -delete 2>/dev/null || true
+          find snowblower/archetypes -mindepth 1 -delete 2>/dev/null || true
           
           # Copy content folder
           cp -r content/* snowblower/content/ 2>/dev/null || true
@@ -41,12 +70,19 @@ jobs:
           cp hugo.toml snowblower/hugo.toml
           
           # Copy data folder
-          rm -rf snowblower/data/*
           cp -r data/* snowblower/data/ 2>/dev/null || true
           
-          # Copy static folder content (excluding generated files)
-          mkdir -p snowblower/static
-          rsync -av --exclude='images/manuels' --exclude='pdf/manuels' static/ snowblower/static/ 2>/dev/null || true
+          # Copy layouts folder
+          cp -r layouts/* snowblower/layouts/ 2>/dev/null || true
+          
+          # Copy archetypes folder
+          cp -r archetypes/* snowblower/archetypes/ 2>/dev/null || true
+          
+          # Copy static folder content (excluding generated PDF/manuel images)
+          if [ -d "static" ]; then
+            rsync -av --exclude='images/manuels' --exclude='pdf/manuels' --exclude='.git' static/ snowblower/static/ 2>/dev/null || \
+            cp -r static/* snowblower/static/ 2>/dev/null || true
+          fi
           
           echo "✅ Content synced successfully"
 
@@ -58,20 +94,24 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           
-          # Check if there are changes
-          if git diff --quiet HEAD; then
+          # Check if there are any changes to commit
+          if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to commit"
             exit 0
           fi
           
-          # Stage changes
+          # Stage all changes
           git add -A
           
-          # Commit with original commit message
-          original_msg="${{ github.event.head_commit.message }}"
-          git commit -m "sync: $original_msg [from tempete@${{ github.sha }}]"
+          # Create commit message
+          if [ -n "${{ github.event.head_commit.message }}" ]; then
+            original_msg="${{ github.event.head_commit.message }}"
+            git commit -m "sync: $original_msg [from tempete@${{ github.sha }}]"
+          else
+            git commit -m "sync: Manual sync from tempete [commit: ${{ github.sha }}]"
+          fi
           
-          # Push to target repo
-          git push origin HEAD
+          # Push to target repo (create branch if it doesn't exist)
+          git push -u origin main || git push -u origin HEAD:main
           
           echo "✅ Content pushed to snowblower repository"
