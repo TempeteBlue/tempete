@@ -52,8 +52,8 @@ def generate_product_page(product, specs_data):
         "date": "2024-01-01",  # Date par défaut
         "categories": [category],
         "tags": [category.lower(), "équipement", "hiver"],
-        "price": float(price) if price else 0,
-        "price_note": price_note,
+        "price": price if price else "Prix sur demande",
+        "price_note": price_note if price else "",
         "image": image if image else "images/produits/placeholder.jpg",
         "manual_ref": f"/{manual_ref}/" if manual_ref else "",
         "in_stock": in_stock,

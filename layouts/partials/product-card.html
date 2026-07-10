@@ -34,7 +34,8 @@
     
     <div class="product-footer">
       {{ if .Params.price }}
-      <span class="product-price">{{ .Params.price }} $</span>
+      {{ $p := printf "%v" .Params.price }}
+      <span class="product-price">{{ if hasPrefix $p "Prix" }}{{ .Params.price }}{{ else }}{{ .Params.price }} ${{ end }}</span>
       {{ end }}
       
       <a href="{{ .RelPermalink }}" class="btn btn-small">Voir les détails</a>
