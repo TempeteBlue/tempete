@@ -43,7 +43,9 @@ def generate_product_page(product, specs_data):
     featured = product.get("featured", "false").lower() == "true"
 
     # Récupère les specs spécifiques au produit
+    # (converties en liste de paires pour préserver l'ordre du YAML dans Hugo)
     product_specs = specs_data.get(sku, {})
+    product_specs_list = [{key: value} for key, value in product_specs.items()]
 
     # Construit le frontmatter YAML
     frontmatter = {
@@ -59,7 +61,7 @@ def generate_product_page(product, specs_data):
         "in_stock": in_stock,
         "featured": featured,
         "sku": sku.upper(),
-        "specs": product_specs,
+        "specs": product_specs_list,
         "draft": False,
     }
 

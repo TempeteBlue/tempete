@@ -140,9 +140,11 @@ def generate_markdown(metadata, product_name, category, images_data, documents_d
     if documents_data:
         frontmatter["documents"] = documents_data
 
-    # Specs
+    # Specs (converties en liste de paires pour préserver l'ordre du YAML dans Hugo)
     if "specs" in metadata:
-        frontmatter["specs"] = metadata["specs"]
+        frontmatter["specs"] = [
+            {key: value} for key, value in metadata["specs"].items()
+        ]
 
     # SKU
     if "sku" in metadata:
