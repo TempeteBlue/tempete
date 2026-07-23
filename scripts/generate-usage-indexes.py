@@ -8,6 +8,8 @@ Structure: content/usages/<categorie>/<equipement>/
 import os
 import yaml
 
+from yaml_utils import safe_load_info
+
 
 def find_files(folder_path):
     """Trouve tous les PDFs, images et fichiers YAML dans un dossier"""
@@ -31,8 +33,8 @@ def find_files(folder_path):
             elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
                 images.append(item)
             elif item.lower() == "info.yaml":
-                with open(item_path, "r", encoding="utf-8") as f:
-                    info = yaml.safe_load(f) or {}
+                # Tolère les guillemets non fermés
+                info = safe_load_info(item_path)
 
     return pdfs, images, info
 

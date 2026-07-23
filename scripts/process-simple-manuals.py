@@ -20,6 +20,8 @@ import yaml
 from pathlib import Path
 import shutil
 
+from yaml_utils import safe_load_info
+
 CONTENT_DIR = Path("content/manuels")
 STATIC_PDF_DIR = Path("static/pdf/manuels")
 STATIC_IMAGES_DIR = Path("static/images/manuels")
@@ -44,9 +46,8 @@ def process_manual_folders():
             if not yaml_file.exists() or not pdf_files:
                 continue
 
-            # Lire les métadonnées
-            with open(yaml_file, "r", encoding="utf-8") as f:
-                metadata = yaml.safe_load(f)
+            # Lire les métadonnées (tolère les guillemets non fermés)
+            metadata = safe_load_info(yaml_file)
 
             model_name = model_dir.name
             pdf_target_dir = STATIC_PDF_DIR / category / model_name
