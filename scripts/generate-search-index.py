@@ -139,7 +139,7 @@ def generate_index():
 
                 metadata = get_info_yaml_data(product_dir)
                 if metadata:
-                    url = f"/produits/{category_dir.name}/{product_dir.name}/"
+                    url = f"/produits/{slugify(category_dir.name)}/{slugify(product_dir.name)}/"
 
                     if url in indexed_urls:
                         continue
@@ -167,7 +167,7 @@ def generate_index():
 
                 metadata = get_info_yaml_data(equipment_dir)
                 if metadata:
-                    url = f"/usage/{category_dir.name}/{equipment_dir.name}/"
+                    url = f"/usage/{slugify(category_dir.name)}/{slugify(equipment_dir.name)}/"
 
                     if url in indexed_urls:
                         continue
