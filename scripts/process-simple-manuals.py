@@ -141,7 +141,7 @@ def generate_markdown(metadata, model_name, category, manuals_data, images_data=
     }
 
     if "specs" in metadata:
-        frontmatter["specs"] = metadata["specs"]
+        frontmatter["specs"] = [{k: v} for k, v in metadata["specs"].items()]
 
     if images_data:
         frontmatter["images"] = images_data

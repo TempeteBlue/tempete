@@ -192,6 +192,13 @@ jobs:
             fi
           fi
 
+      - name: Setup Python and install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
       - name: Clean generated content
         run: |
           echo "🧹 Nettoyage du contenu généré..."
@@ -246,51 +253,49 @@ jobs:
 
       - name: Generate product pages from data
         run: |
-          echo "🔄 Génération automatique des pages produits..."
-          # Script pour générer les pages Markdown des produits depuis CSV/YAML
-          python3 scripts/generate-products.py || echo "Pas de script de génération"
+          echo "🔄 Génération des pages produits..."
+          python3 scripts/generate-products.py
 
       - name: Process simple manual folders
         run: |
           echo "📁 Traitement des dossiers de manuels simples..."
-          python3 scripts/process-simple-manuals.py || echo "Pas de dossiers simples à traiter"
+          python3 scripts/process-simple-manuals.py
 
       - name: Process simple product folders
         run: |
           echo "📦 Traitement des dossiers de produits simples..."
-          python3 scripts/process-simple-products.py || echo "Pas de dossiers simples à traiter"
+          python3 scripts/process-simple-products.py
 
       - name: Process simple usage folders
         run: |
           echo "🔧 Traitement des dossiers d'équipements usagés simples..."
-          python3 scripts/process-simple-usages.py || echo "Pas de dossiers simples à traiter"
+          python3 scripts/process-simple-usages.py
 
       - name: Generate manual indexes from PDF folders
         run: |
           echo "📄 Génération des index pour les dossiers de manuels..."
-          python3 scripts/generate-manual-indexes.py || echo "Pas de dossiers à indexer"
+          python3 scripts/generate-manual-indexes.py
 
       - name: Generate product indexes from folders
         run: |
           echo "📦 Génération des index pour les dossiers de produits..."
-          python3 scripts/generate-product-indexes.py || echo "Pas de dossiers à indexer"
+          python3 scripts/generate-product-indexes.py
 
       - name: Generate usage indexes from folders
         run: |
           echo "🔧 Génération des index pour les dossiers d'équipements usagés..."
-          python3 scripts/generate-usage-indexes.py || echo "Pas de dossiers à indexer"
+          python3 scripts/generate-usage-indexes.py
+
+      - name: Generate search index
+        run: |
+          echo "🔍 Génération de l'index de recherche..."
+          python3 scripts/generate-search-index.py
 
       - name: Build Hugo site
         run: hugo --gc --minify --baseURL "https://www.souffleur.ca/"
         env:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
-
-      - name: Generate search index
-        run: |
-          echo "🔍 Génération de l'index de recherche..."
-          # Créer un index JSON pour la recherche
-          python3 scripts/generate-search-index.py || echo "Pas de script de recherche"
 
       - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
