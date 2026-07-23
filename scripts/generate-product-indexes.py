@@ -51,8 +51,9 @@ def generate_product_index(folder_path, category, product_name):
     }
 
     # Ajouter les specs si présentes dans info.yaml
+    # (converties en liste de paires pour préserver l'ordre du YAML dans Hugo)
     if "specs" in info:
-        frontmatter["specs"] = info["specs"]
+        frontmatter["specs"] = [{key: value} for key, value in info["specs"].items()]
 
     # Ajouter le prix
     if "price" in info:
