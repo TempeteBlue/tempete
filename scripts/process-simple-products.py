@@ -21,6 +21,8 @@ import yaml
 from pathlib import Path
 import shutil
 
+from yaml_utils import safe_load_info
+
 CONTENT_DIR = Path("content/produits")
 STATIC_PDF_DIR = Path("static/pdf/produits")
 STATIC_IMAGES_DIR = Path("static/images/produits")
@@ -46,9 +48,8 @@ def process_product_folders():
             if not yaml_file.exists():
                 continue
 
-            # Lire les métadonnées
-            with open(yaml_file, "r", encoding="utf-8") as f:
-                metadata = yaml.safe_load(f)
+            # Lire les métadonnées (tolère les guillemets non fermés)
+            metadata = safe_load_info(yaml_file)
 
             product_name = product_dir.name
 
