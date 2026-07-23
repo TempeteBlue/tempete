@@ -8,7 +8,7 @@
   "price_note" (.Params.price_note | default "")
   "sku" (.Params.sku | default "")
   "in_stock" (.Params.in_stock | default true)
-  "specs" (.Params.specs | default dict)
+  "specs" (.Params.specs | default slice)
 ) }}
 {{ $images := $data.images }}
 {{ $documents := $data.documents }}
@@ -93,11 +93,14 @@
           <h2>Caractéristiques techniques</h2>
           <table class="specs-table">
             <tbody>
-              {{ range $key, $value := $data.specs }}
-              <tr>
-                <th>{{ $key }}</th>
-                <td>{{ $value }}</td>
-              </tr>
+              {{/* Liste de paires clé/valeur: l'ordre du YAML est préservé */}}
+              {{ range $data.specs }}
+                {{ range $key, $value := . }}
+                <tr>
+                  <th>{{ $key }}</th>
+                  <td>{{ $value }}</td>
+                </tr>
+                {{ end }}
               {{ end }}
             </tbody>
           </table>
