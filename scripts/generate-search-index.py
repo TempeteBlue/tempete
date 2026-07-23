@@ -100,10 +100,13 @@ def generate_index():
             metadata, body = parse_frontmatter(content)
 
             rel_path = md_file.relative_to(CONTENT_DIR)
-            # Use forward slashes for URLs (without baseURL prefix - will be relative)
-            url = "/" + str(rel_path).replace("\\", "/").replace(".md", "/").replace(
-                "_index/", ""
-            ).replace("/index/", "/")
+            # For index.md inside a directory, use the directory name as the last segment
+            parts = rel_path.with_suffix("").parts
+            if parts[-1] == "index":
+                parts = parts[:-1]
+            # Slugify each path segment to match Hugo
+            slugged = "/".join(slugify(p) for p in parts)
+            url = f"/{slugged}/"
 
             # Éviter les doublons
             if url in indexed_urls:
