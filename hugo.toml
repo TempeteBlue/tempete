@@ -4,12 +4,6 @@ title = 'Tempête est le distributeur autorisé des pièces et produits Radtech 
 
 # No theme - using custom layouts
 
-# Permalinks canoniques avec catégories
-[permalinks]
-  manuels = '/manuels/:sections/:slug/'
-  produits = '/produits/:sections/:slug/'
-  usage = '/usage/:sections/:slug/'
-
 # Taxonomies pour organiser les manuels
 [taxonomies]
   categorie = 'categories'

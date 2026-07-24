@@ -25,9 +25,9 @@
           {{ if gt $imageCount 1 }}
           <div class="carousel-container">
             <div class="carousel-track" id="carouselTrack">
-              {{ range $images }}
+              {{ range $i, $img := $images }}
               <div class="carousel-slide">
-                <img src="{{ . | absURL }}" alt="{{ $data.title }}" itemprop="image">
+                <img src="{{ $img | absURL }}" alt="{{ $data.title }}" itemprop="image" onclick="openLightbox({{ $i }})">
               </div>
               {{ end }}
             </div>
@@ -41,7 +41,7 @@
           </div>
           {{ else }}
           <figure class="product-main-image">
-            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image" itemprop="image">
+            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image" itemprop="image" onclick="openLightbox(0)">
           </figure>
           {{ end }}
         {{ else }}
@@ -144,6 +144,17 @@
     </div>
   </article>
 </div>
+
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+  <button class="lightbox-btn lightbox-prev" onclick="changeLightbox(-1)">&#10094;</button>
+  <button class="lightbox-btn lightbox-next" onclick="changeLightbox(1)">&#10095;</button>
+  <div class="lightbox-body">
+    <img id="lightbox-img" src="" alt="">
+  </div>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
+</div>
 {{ end }}
 
 {{ define "structured-data" }}
@@ -185,14 +196,45 @@
 
 {{ define "scripts" }}
 <script>
-// Gallerie d'images
-document.querySelectorAll('.thumbnail').forEach(thumb => {
-  thumb.addEventListener('click', function() {
-    const mainImage = document.getElementById('main-product-image');
-    if (mainImage) {
-      mainImage.src = this.dataset.src;
-    }
-  });
+// Lightbox
+const lightboxImages = [
+  {{ range .Params.images }}"{{ . | absURL }}",{{ end }}
+];
+
+let lightboxIndex = 0;
+
+function openLightbox(index) {
+  if (!lightboxImages.length) return;
+  lightboxIndex = index;
+  const overlay = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = lightboxImages[index];
+  document.getElementById('lightbox-counter').textContent =
+    (index + 1) + ' / ' + lightboxImages.length;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function changeLightbox(dir) {
+  if (lightboxImages.length < 2) return;
+  lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+  document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
+  document.getElementById('lightbox-counter').textContent =
+    (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+}
+
+document.addEventListener('keydown', function(e) {
+  const overlay = document.getElementById('lightbox');
+  if (!overlay.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') changeLightbox(-1);
+  if (e.key === 'ArrowRight') changeLightbox(1);
 });
 </script>
 {{ end }}

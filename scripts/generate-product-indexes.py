@@ -6,6 +6,7 @@ Structure: content/produits/<categorie>/<produit>/
 """
 
 import os
+import shutil
 import yaml
 
 from yaml_utils import safe_load_info
@@ -39,12 +40,32 @@ def find_files(folder_path):
     return pdfs, images, info
 
 
+def copy_to_static(folder_path, category, product_name):
+    """Copie les images et PDFs du dossier produit vers static/"""
+    img_static_dir = f"static/images/produits/{category}/{product_name}"
+    pdf_static_dir = f"static/pdf/produits/{category}/{product_name}"
+    os.makedirs(img_static_dir, exist_ok=True)
+    os.makedirs(pdf_static_dir, exist_ok=True)
+
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if not os.path.isfile(item_path):
+            continue
+        if item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+            shutil.copy2(item_path, os.path.join(img_static_dir, item))
+        elif item.lower().endswith(".pdf"):
+            shutil.copy2(item_path, os.path.join(pdf_static_dir, item))
+
+
 def generate_product_index(folder_path, category, product_name):
     """Génère un fichier index.md pour un produit"""
     pdfs, images, info = find_files(folder_path)
 
     if not info and not pdfs and not images:
         return False
+
+    # Copier les fichiers vers static/
+    copy_to_static(folder_path, category, product_name)
 
     frontmatter = {
         "title": info.get("title", product_name),

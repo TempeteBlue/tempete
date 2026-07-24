@@ -44,13 +44,17 @@
       {{ range .Pages }}
       <article class="product-card">
         {{ if .Params.images }}
-        <div class="product-image">
-          <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><img src=\'{{ "images/icone.svg" | relURL }}\' alt=\'\' style=\'width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);\'></div>'">
-        </div>
+        <a href="{{ .RelPermalink }}" class="product-image-link">
+          <div class="product-image">
+            <img src="{{ index .Params.images 0 | absURL }}" alt="{{ .Title }}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'product-placeholder\'><img src=\'{{ "images/icone.svg" | relURL }}\' alt=\'\' style=\'width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);\'></div>'">
+          </div>
+        </a>
         {{ else }}
-        <div class="product-image">
-          <div class="product-placeholder"><img src="{{ "images/icone.svg" | relURL }}" alt="" style="width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);"></div>
-        </div>
+        <a href="{{ .RelPermalink }}" class="product-image-link">
+          <div class="product-image">
+            <div class="product-placeholder"><img src="{{ "images/icone.svg" | relURL }}" alt="" style="width: 64px; height: 64px; filter: brightness(0) saturate(100%) invert(20%) sepia(100%) saturate(5000%) hue-rotate(0deg);"></div>
+          </div>
+        </a>
         {{ end }}
         
         <div class="product-info">
