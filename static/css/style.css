@@ -1559,6 +1559,7 @@ h4 { font-size: var(--font-size-xl); }
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 1000;
     background: var(--color-primary);
     flex-direction: column;
     padding: var(--spacing-xl);
@@ -1777,10 +1778,16 @@ h4 { font-size: var(--font-size-xl); }
 .lightbox-overlay {
   display: none;
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0,0,0,0.92);
   z-index: 9999;
   cursor: pointer;
+  overflow: hidden;
 }
 .lightbox-overlay.open {
   display: flex;
@@ -1791,10 +1798,13 @@ h4 { font-size: var(--font-size-xl); }
 .lightbox-overlay img {
   max-width: 90vw;
   max-height: 85vh;
-  width: auto;
-  height: auto;
   object-fit: contain;
-  cursor: default;
+  border-radius: 4px;
+}
+.lightbox-overlay video {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
   border-radius: 4px;
 }
 .lightbox-close {
