@@ -26,6 +26,7 @@ from yaml_utils import safe_load_info
 CONTENT_DIR = Path("content/produits")
 STATIC_PDF_DIR = Path("static/pdf/produits")
 STATIC_IMAGES_DIR = Path("static/images/produits")
+STATIC_VIDEOS_DIR = Path("static/videos/produits")
 
 
 def process_product_folders():
@@ -60,6 +61,9 @@ def process_product_folders():
             image_target_dir = STATIC_IMAGES_DIR / category / product_name
             image_target_dir.mkdir(parents=True, exist_ok=True)
 
+            video_target_dir = STATIC_VIDEOS_DIR / category / product_name
+            video_target_dir.mkdir(parents=True, exist_ok=True)
+
             # Copier les images
             images_data = []
             image_files = (
@@ -77,6 +81,23 @@ def process_product_folders():
                     f"images/produits/{category}/{product_name}/{img_file.name}"
                 )
                 print(f"  🖼️ Copié: {category}/{product_name}/{img_file.name}")
+
+            # Copier les vidéos
+            videos_data = []
+            video_files = (
+                list(product_dir.glob("*.mp4"))
+                + list(product_dir.glob("*.webm"))
+                + list(product_dir.glob("*.mov"))
+            )
+            video_files = [f for f in video_files if f.name != "desktop.ini"]
+
+            for video_file in video_files:
+                target_video = video_target_dir / video_file.name
+                shutil.copy2(video_file, target_video)
+                videos_data.append(
+                    f"videos/produits/{category}/{product_name}/{video_file.name}"
+                )
+                print(f"  🎬 Copié: {category}/{product_name}/{video_file.name}")
 
             # Copier les PDFs et créer la liste des documents
             documents_data = []
@@ -100,7 +121,7 @@ def process_product_folders():
 
             # Générer le fichier markdown
             md_content = generate_markdown(
-                metadata, product_name, category, images_data, documents_data
+                metadata, product_name, category, images_data, documents_data, videos_data
             )
             md_file = product_dir / "index.md"
 
@@ -110,11 +131,13 @@ def process_product_folders():
             print(f"  ✓ Généré: {category}/{product_name}/index.md")
 
 
-def generate_markdown(metadata, product_name, category, images_data, documents_data):
+def generate_markdown(metadata, product_name, category, images_data, documents_data, videos_data=None):
     """Génère le contenu markdown"""
 
     if images_data is None:
         images_data = []
+    if videos_data is None:
+        videos_data = []
 
     frontmatter = {
         "title": metadata.get("title", product_name),
@@ -136,6 +159,10 @@ def generate_markdown(metadata, product_name, category, images_data, documents_d
     # Images
     if images_data:
         frontmatter["images"] = images_data
+
+    # Videos
+    if videos_data:
+        frontmatter["videos"] = videos_data
 
     # Documents/PDFs
     if documents_data:

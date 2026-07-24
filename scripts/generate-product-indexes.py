@@ -13,13 +13,14 @@ from yaml_utils import safe_load_info
 
 
 def find_files(folder_path):
-    """Trouve tous les PDFs, images et fichiers YAML dans un dossier"""
+    """Trouve tous les PDFs, images, vidéos et fichiers YAML dans un dossier"""
     pdfs = []
     images = []
+    videos = []
     info = {}
 
     if not os.path.exists(folder_path):
-        return pdfs, images, info
+        return pdfs, images, videos, info
 
     for item in os.listdir(folder_path):
         item_path = os.path.join(folder_path, item)
@@ -33,19 +34,23 @@ def find_files(folder_path):
                 )
             elif item.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
                 images.append(item)
+            elif item.lower().endswith((".mp4", ".webm", ".mov")):
+                videos.append(item)
             elif item.lower() == "info.yaml":
                 # Tolère les guillemets non fermés
                 info = safe_load_info(item_path)
 
-    return pdfs, images, info
+    return pdfs, images, videos, info
 
 
 def copy_to_static(folder_path, category, product_name):
-    """Copie les images et PDFs du dossier produit vers static/"""
+    """Copie les images, vidéos et PDFs du dossier produit vers static/"""
     img_static_dir = f"static/images/produits/{category}/{product_name}"
     pdf_static_dir = f"static/pdf/produits/{category}/{product_name}"
+    video_static_dir = f"static/videos/produits/{category}/{product_name}"
     os.makedirs(img_static_dir, exist_ok=True)
     os.makedirs(pdf_static_dir, exist_ok=True)
+    os.makedirs(video_static_dir, exist_ok=True)
 
     for item in os.listdir(folder_path):
         item_path = os.path.join(folder_path, item)
@@ -55,13 +60,15 @@ def copy_to_static(folder_path, category, product_name):
             shutil.copy2(item_path, os.path.join(img_static_dir, item))
         elif item.lower().endswith(".pdf"):
             shutil.copy2(item_path, os.path.join(pdf_static_dir, item))
+        elif item.lower().endswith((".mp4", ".webm", ".mov")):
+            shutil.copy2(item_path, os.path.join(video_static_dir, item))
 
 
 def generate_product_index(folder_path, category, product_name):
     """Génère un fichier index.md pour un produit"""
-    pdfs, images, info = find_files(folder_path)
+    pdfs, images, videos, info = find_files(folder_path)
 
-    if not info and not pdfs and not images:
+    if not info and not pdfs and not images and not videos:
         return False
 
     # Copier les fichiers vers static/
@@ -89,6 +96,12 @@ def generate_product_index(folder_path, category, product_name):
     if images:
         frontmatter["images"] = [
             f"images/produits/{category}/{product_name}/{img}" for img in images
+        ]
+
+    # Ajouter les vidéos avec le bon chemin
+    if videos:
+        frontmatter["videos"] = [
+            f"videos/produits/{category}/{product_name}/{vid}" for vid in videos
         ]
 
     # Ajouter les PDFs avec le bon chemin
@@ -123,7 +136,7 @@ Pour toute question ou commande, n'hésitez pas à [nous contacter](/contact/).
         f.write(content)
 
     print(
-        f"✓ Produit: {category}/{product_name}/index.md ({len(pdfs)} PDFs, {len(images)} images)"
+        f"✓ Produit: {category}/{product_name}/index.md ({len(pdfs)} PDFs, {len(images)} images, {len(videos)} vidéos)"
     )
     return True
 

@@ -11,38 +11,63 @@
   "specs" (.Params.specs | default slice)
 ) }}
 {{ $images := $data.images }}
+{{ $videos := .Params.videos | default slice }}
 {{ $documents := $data.documents }}
 {{ $firstImage := "" }}
 {{ if $images }}{{ $firstImage = index $images 0 }}{{ end }}
+{{ $media := slice }}
+{{ range $images }}
+  {{ $media = $media | append (dict "type" "image" "src" .) }}
+{{ end }}
+{{ range $videos }}
+  {{ $media = $media | append (dict "type" "video" "src" .) }}
+{{ end }}
 
 <div class="container page-container">
   <article class="product-page" itemscope itemtype="https://schema.org/Product">
     <div class="product-layout">
-      <!-- Colonne images -->
+      <!-- Colonne images / vidéos -->
       <div class="product-gallery">
-        {{ if $images }}
-          {{ $imageCount := len $images }}
-          {{ if gt $imageCount 1 }}
+        {{ if $media }}
+          {{ $mediaCount := len $media }}
+          {{ if gt $mediaCount 1 }}
           <div class="carousel-container">
             <div class="carousel-track" id="carouselTrack">
-              {{ range $i, $img := $images }}
+              {{ range $i, $m := $media }}
               <div class="carousel-slide">
-                <img src="{{ $img | absURL }}" alt="{{ $data.title }}" itemprop="image" onclick="openLightbox({{ $i }})">
+                {{ if eq $m.type "video" }}
+                <div class="media-video-thumb" onclick="openLightbox({{ $i }})">
+                  <video src="{{ $m.src | absURL }}" preload="metadata" muted playsinline></video>
+                  <span class="play-icon">&#9654;</span>
+                </div>
+                {{ else }}
+                <img src="{{ $m.src | absURL }}" alt="{{ $data.title }}" itemprop="image" onclick="openLightbox({{ $i }})">
+                {{ end }}
               </div>
               {{ end }}
             </div>
             <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
             <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
             <div class="carousel-dots">
-              {{ range $i, $_ := $images }}
+              {{ range $i, $_ := $media }}
               <span class="carousel-dot {{ if eq $i 0 }}active{{ end }}" onclick="goToSlide({{ $i }})"></span>
               {{ end }}
             </div>
           </div>
           {{ else }}
-          <figure class="product-main-image">
-            <img src="{{ index $images 0 | absURL }}" alt="{{ $data.title }}" id="main-product-image" itemprop="image" onclick="openLightbox(0)">
-          </figure>
+            {{ $m := index $media 0 }}
+            {{ if eq $m.type "video" }}
+            <figure class="product-main-image">
+              <div class="media-video-thumb" onclick="openLightbox(0)">
+                <video src="{{ $m.src | absURL }}" preload="metadata" muted playsinline></video>
+                <span class="play-icon">&#9654;</span>
+              </div>
+            </figure>
+            {{ else }}
+            <figure class="product-main-image">
+              <img src="{{ $m.src | absURL }}" alt="{{ $data.title }}" id="main-product-image" itemprop="image" onclick="openLightbox(0)">
+            </figure>
+            {{ end }}
           {{ end }}
         {{ else }}
           <div class="product-placeholder">
@@ -150,7 +175,8 @@
   <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
   <button class="lightbox-btn lightbox-prev" onclick="changeLightbox(-1)">&#10094;</button>
   <button class="lightbox-btn lightbox-next" onclick="changeLightbox(1)">&#10095;</button>
-  <img id="lightbox-img" src="" alt="">
+  <img id="lightbox-img" src="" alt="" style="display:none">
+  <video id="lightbox-video" src="" controls playsinline style="display:none; max-width:90vw; max-height:85vh; border-radius:4px;"></video>
   <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
 {{ end }}
@@ -194,37 +220,57 @@
 
 {{ define "scripts" }}
 <script>
-// Lightbox
-const lightboxImages = [
-  {{ range .Params.images }}"{{ . | absURL }}",{{ end }}
+// Lightbox — media items (images + videos)
+const mediaItems = [
+  {{ range .Params.images }}{type:"image",src:"{{ . | absURL }}"},{{ end }}
+  {{ range .Params.videos }}{type:"video",src:"{{ . | absURL }}"},{{ end }}
 ];
 
 let lightboxIndex = 0;
 
+function showMedia(index) {
+  const item = mediaItems[index];
+  const img = document.getElementById('lightbox-img');
+  const video = document.getElementById('lightbox-video');
+  if (item.type === 'video') {
+    img.style.display = 'none';
+    video.style.display = 'inline-block';
+    video.src = item.src;
+    video.load();
+    video.play();
+  } else {
+    video.style.display = 'none';
+    video.pause();
+    video.src = '';
+    img.style.display = 'inline-block';
+    img.src = item.src;
+  }
+  document.getElementById('lightbox-counter').textContent =
+    (index + 1) + ' / ' + mediaItems.length;
+}
+
 function openLightbox(index) {
-  if (!lightboxImages.length) return;
+  if (!mediaItems.length) return;
   lightboxIndex = index;
   const overlay = document.getElementById('lightbox');
-  const img = document.getElementById('lightbox-img');
-  img.src = lightboxImages[index];
-  document.getElementById('lightbox-counter').textContent =
-    (index + 1) + ' / ' + lightboxImages.length;
+  showMedia(index);
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeLightbox(e) {
   if (e && e.target !== e.currentTarget) return;
+  const video = document.getElementById('lightbox-video');
+  video.pause();
+  video.src = '';
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
 }
 
 function changeLightbox(dir) {
-  if (lightboxImages.length < 2) return;
-  lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
-  document.getElementById('lightbox-img').src = lightboxImages[lightboxIndex];
-  document.getElementById('lightbox-counter').textContent =
-    (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+  if (mediaItems.length < 2) return;
+  lightboxIndex = (lightboxIndex + dir + mediaItems.length) % mediaItems.length;
+  showMedia(lightboxIndex);
 }
 
 document.addEventListener('keydown', function(e) {
