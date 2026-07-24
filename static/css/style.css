@@ -1558,18 +1558,18 @@ h4 { font-size: var(--font-size-xl); }
     top: 4.5rem;
     bottom: 0;
     width: 100%;
-    right: -100%;
+    left: 100%;
     z-index: 1000;
     background: var(--color-primary);
     flex-direction: column;
     padding: var(--spacing-xl);
-    transition: right var(--transition);
+    transition: left var(--transition);
     overflow-y: auto;
     visibility: hidden;
   }
   
   .main-nav.active {
-    right: 0;
+    left: 0;
     visibility: visible;
   }
   
