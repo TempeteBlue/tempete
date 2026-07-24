@@ -1557,8 +1557,8 @@ h4 { font-size: var(--font-size-xl); }
     position: fixed;
     top: 4.5rem;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: calc(100vh - 4.5rem);
     z-index: 1000;
     background: var(--color-primary);
     flex-direction: column;
