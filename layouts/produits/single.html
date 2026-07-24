@@ -282,6 +282,7 @@ document.getElementById('lightbox').addEventListener('touchstart', function(e) {
 document.getElementById('lightbox').addEventListener('touchend', function(e) {
   const deltaX = e.changedTouches[0].clientX - touchStartX;
   if (Math.abs(deltaX) > 50) {
+    e.preventDefault();
     changeLightbox(deltaX > 0 ? -1 : 1);
   }
 });
