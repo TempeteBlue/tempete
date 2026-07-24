@@ -234,7 +234,7 @@ function showMedia(index) {
   const video = document.getElementById('lightbox-video');
   if (item.type === 'video') {
     img.style.display = 'none';
-    video.style.display = 'inline-block';
+    video.style.display = 'block';
     video.src = item.src;
     video.load();
     video.play();
@@ -242,7 +242,7 @@ function showMedia(index) {
     video.style.display = 'none';
     video.pause();
     video.src = '';
-    img.style.display = 'inline-block';
+    img.style.display = 'block';
     img.src = item.src;
   }
   document.getElementById('lightbox-counter').textContent =

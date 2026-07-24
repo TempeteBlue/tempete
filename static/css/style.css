@@ -1783,17 +1783,12 @@ h4 { font-size: var(--font-size-xl); }
   cursor: pointer;
 }
 .lightbox-overlay.open {
-  display: block;
-}
-.lightbox-overlay::before {
-  content: '';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .lightbox-overlay img {
-  display: inline-block;
-  vertical-align: middle;
   max-width: 90vw;
   max-height: 85vh;
   width: auto;
