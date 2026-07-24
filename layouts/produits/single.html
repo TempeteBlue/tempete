@@ -196,7 +196,7 @@
 <script>
 // Lightbox
 const lightboxImages = [
-  {{ range $images }}"{{ . | absURL }}",{{ end }}
+  {{ range .Params.images }}"{{ . | absURL }}",{{ end }}
 ];
 
 let lightboxIndex = 0;
