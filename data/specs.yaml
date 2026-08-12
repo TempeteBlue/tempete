@@ -6,8 +6,7 @@ sa92b:
   systeme_rotation: "Hydraulique standard"
   deversement: "Électrique (option 8151)"
   attache: "Attache rapide compatible John Deere"
-  garantie: "2 ans pièces et main-d'œuvre"
-  
+   
 sa98b:
   largeur: "98 pouces (2489 mm)"
   hauteur: "50 pouces"
@@ -16,7 +15,6 @@ sa98b:
   systeme_rotation: "Hydraulique haut débit"
   deversement: "Électrique (option 8151)"
   attache: "Attache rapide compatible John Deere"
-  garantie: "2 ans pièces et main-d'œuvre"
 
 b84a:
   largeur: "84 pouces (2134 mm)"
@@ -26,7 +24,6 @@ b84a:
   systeme: "Hydraulique"
   attache: "Attache rapide"
   vitesse_rotation: "150-200 RPM"
-  garantie: "1 an"
 
 b94a:
   largeur: "94 pouces (2388 mm)"
@@ -36,7 +33,6 @@ b94a:
   systeme: "Hydraulique"
   attache: "Attache rapide"
   vitesse_rotation: "150-200 RPM"
-  garantie: "1 an"
 
 h64a:
   largeur: "64 pouces (1626 mm)"
@@ -46,7 +42,6 @@ h64a:
   systeme_rotation: "Hydraulique dédié"
   deversement: "Manuel ou électrique"
   compacite: "Compatible tracteurs compacts"
-  garantie: "2 ans"
 
 db6000:
   largeur: "60 pouces"
@@ -56,4 +51,3 @@ db6000:
   systeme_rotation: "Hydraulique"
   deversement: "Élevateur hydraulique"
   usage: "Débris feuilles et neige légère"
-  garantie: "1 an"

@@ -65,7 +65,7 @@ specs:
   Largeur de travail: "72 pouces (183 cm)"
   Hauteur d'attaque: "30 pouces (76 cm)"
   Poids: "1 200 lbs (544 kg)"
-  Garantie: "3 ans / 2000 heures"
+  
 ```
 
 ## Comment ajouter un équipement usagé
@@ -95,7 +95,7 @@ specs:
   Largeur de travail: "84 pouces (213 cm)"
   Heures d'utilisation: "1 250 heures"
   État général: "Excellent"
-  Garantie: "6 mois pièces et main-d'œuvre"
+  
 ```
 
 ## Ce qui se passe automatiquement

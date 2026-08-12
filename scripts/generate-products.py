@@ -90,7 +90,6 @@ def generate_product_page(product, specs_data):
 
 - **Référence (SKU)**: {sku.upper()}
 - **Disponibilité**: {"En stock" if in_stock else "Sur commande"}
-- **Garantie**: {product_specs.get("garantie", "Voir détails en magasin")}
 
 Pour plus d'informations ou pour commander ce produit, [contactez-nous](/contact/?produit={slugify(name)}).
 """

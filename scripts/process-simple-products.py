@@ -208,11 +208,6 @@ def generate_markdown(metadata, product_name, category, images_data, documents_d
 
     content += f"- **Disponibilité**: {'En stock' if metadata.get('in_stock', True) else 'Sur commande'}\n"
 
-    if "garantie" in metadata.get("specs", {}):
-        content += f"- **Garantie**: {metadata['specs']['garantie']}\n"
-    else:
-        content += "- **Garantie**: Voir détails en magasin\n"
-
     content += f"""
 
 Pour plus d'informations ou pour commander ce produit, [contactez-nous](/contact/?produit={product_name}).
